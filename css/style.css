@@ -524,7 +524,8 @@ body.no-shards .floating-3d-layer {
 }
 
 .domain-omnibox {
-  flex: 1;
+  flex: 1 1 260px;
+  min-width: 0;
   max-width: 440px;
   display: flex;
   align-items: center;
@@ -546,10 +547,19 @@ html[data-lighting="light"] .domain-omnibox {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  flex: 1;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#omnibox-url-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ssl-dot {
@@ -2042,12 +2052,14 @@ html[data-lighting="light"] .brief-preview {
   }
   .bottom-pill-nav {
     width: calc(100vw - 20px);
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: 20px;
     padding: 5px;
-    gap: 2px;
+    gap: 3px;
   }
   .bottom-nav-btn {
-    padding: 6px 8px;
+    padding: 5px 8px;
     font-size: 0.71rem;
   }
   .modal-preview-frame {
