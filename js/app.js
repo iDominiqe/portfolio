@@ -3,6 +3,15 @@
 // ==========================================================================
 
 import { SUPPORTED_LANGS, TRANSLATIONS } from "./i18n.js";
+import { BG_ANIMATIONS, initBackgroundAnimations } from "./bg-animations.js";
+import { BLOG_UI, ARTICLES } from "./blog-data.js";
+import {
+  smoothScrollToElement,
+  updateOmniboxUrl,
+  getCurrentOmniboxUrl,
+  initScrollProgressBar,
+  bindSmoothAnchorLinks
+} from "./smooth-scroll.js";
 
 const PALETTES = [
   { id: "aurora", name: "Aurora", swatch: "linear-gradient(135deg,#8b5cf6,#38bdf8,#f472b6)" },
@@ -375,6 +384,7 @@ const DEFAULT_STATE = {
   lang: "en",
   palette: "aurora",
   lighting: "dark",
+  bgAnim: "cubes",
   category: "all",
   search: "",
   heroIndex: 0,
@@ -461,6 +471,8 @@ function applyLanguage() {
   renderMiniBuilds();
   renderPortfolioGrid();
   renderServices();
+  renderAnimPickers();
+  renderBlogPreview();
 }
 
 function applyThemeAndFX() {
@@ -496,6 +508,9 @@ function applyThemeAndFX() {
   });
   document.querySelectorAll("[data-palette-id]").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.paletteId === state.palette);
+  });
+  document.querySelectorAll("[data-anim-id]").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.animId === state.bgAnim);
   });
   document.querySelectorAll("[data-bg-preset]").forEach((btn) => {
     btn.classList.toggle("active", !state.customBg && btn.dataset.bgPreset === state.bgPreset);
@@ -541,6 +556,65 @@ function renderPalettes() {
       });
     });
   }
+}
+
+function renderAnimPickers() {
+  const labels = t("bgAnims") || {};
+  for (const targetId of ["quick-anim-list", "drawer-anim-list"]) {
+    const box = document.getElementById(targetId);
+    if (!box) continue;
+    box.innerHTML = BG_ANIMATIONS.map(
+      (a) => `
+      <button class="anim-chip ${state.bgAnim === a.id ? "active" : ""}" data-anim-id="${a.id}">
+        <span aria-hidden="true">${a.icon}</span>
+        <span>${labels[a.id] || a.id}</span>
+      </button>`
+    ).join("");
+
+    box.querySelectorAll("[data-anim-id]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.bgAnim = btn.dataset.animId;
+        applyThemeAndFX();
+        saveState();
+      });
+    });
+  }
+}
+
+function renderBlogPreview() {
+  const grid = document.getElementById("blog-preview-grid");
+  if (!grid) return;
+  const ui = BLOG_UI[state.lang] || BLOG_UI.en;
+  grid.innerHTML = ARTICLES.map((a) => {
+    const title = a.title[state.lang] || a.title.en;
+    const excerpt = a.excerpt[state.lang] || a.excerpt.en;
+    const topicLabel = ui.topics[a.topic] || a.topic;
+    return `
+      <a class="blog-card liquid-glass" href="blog/${a.file}">
+        <div>
+          <div class="blog-card-banner" style="background:${a.gradient}">
+            <div class="blog-card-meta">
+              <span class="project-cat-badge">${topicLabel}</span>
+              <span class="project-domain-chip">/blog/${a.slug}</span>
+            </div>
+            <div class="blog-card-meta">
+              <span>${a.date}</span>
+              <span>⏱ ${a.readTime} ${ui.readTimeSuffix}</span>
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <h3>${title}</h3>
+            <p>${excerpt}</p>
+          </div>
+        </div>
+        <div class="project-footer">
+          <div class="project-meta-row">
+            ${a.tags.map((tg) => `<span class="tech-pill">${tg}</span>`).join("")}
+          </div>
+          <span class="card-circle-btn" aria-hidden="true">→</span>
+        </div>
+      </a>`;
+  }).join("");
 }
 
 function renderSocials() {
@@ -811,6 +885,24 @@ function renderCmdResults(query) {
         openProjectModal(p);
       }
     })),
+    ...ARTICLES.map((a) => ({
+      label: `📘 ${a.title[state.lang] || a.title.en}`,
+      hint: `/blog/${a.slug}`,
+      action: () => {
+        closeCmdPalette();
+        window.location.href = `blog/${a.file}`;
+      }
+    })),
+    ...BG_ANIMATIONS.map((a) => ({
+      label: `${a.icon} BG Animation: ${(t("bgAnims") || {})[a.id] || a.id}`,
+      hint: "Canvas FX",
+      action: () => {
+        state.bgAnim = a.id;
+        applyThemeAndFX();
+        saveState();
+        closeCmdPalette();
+      }
+    })),
     ...PALETTES.map((pal) => ({
       label: `🎨 Palette: ${pal.name}`,
       hint: "Theme",
@@ -863,87 +955,8 @@ function renderCmdResults(query) {
 }
 
 // ==========================================================================
-// 3D DAMPED-SPRING PARALLAX, MOUSE CAUSTICS & AMBIENT MESH CANVAS
+// 3D DAMPED-SPRING PARALLAX & MOUSE CAUSTICS
 // ==========================================================================
-function initAmbientCanvas() {
-  const canvas = document.getElementById("ambient-canvas");
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-
-  let w = 0;
-  let h = 0;
-  const resize = () => {
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    w = window.innerWidth;
-    h = window.innerHeight;
-    canvas.width = Math.floor(w * dpr);
-    canvas.height = Math.floor(h * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  };
-  resize();
-  window.addEventListener("resize", resize);
-
-  const blobs = Array.from({ length: 5 }, (_, i) => ({
-    x: Math.random() * w,
-    y: Math.random() * h,
-    vx: (Math.random() - 0.5) * 0.45,
-    vy: (Math.random() - 0.5) * 0.45,
-    r: 220 + i * 55
-  }));
-
-  const paletteColors = {
-    aurora: ["rgba(139,92,246,0.34)", "rgba(56,189,248,0.28)", "rgba(244,114,182,0.24)"],
-    vision: ["rgba(226,214,198,0.24)", "rgba(148,163,184,0.22)", "rgba(251,191,36,0.18)"],
-    cyber: ["rgba(244,63,94,0.34)", "rgba(251,146,60,0.24)", "rgba(56,189,248,0.20)"],
-    emerald: ["rgba(16,185,129,0.32)", "rgba(34,211,238,0.26)", "rgba(250,204,21,0.18)"],
-    sunset: ["rgba(251,113,133,0.32)", "rgba(251,146,60,0.28)", "rgba(192,132,252,0.24)"],
-    arctic: ["rgba(96,165,250,0.32)", "rgba(103,232,249,0.26)", "rgba(129,140,248,0.24)"]
-  };
-
-  let pointerX = w * 0.5;
-  let pointerY = h * 0.5;
-  window.addEventListener("pointermove", (e) => {
-    pointerX = e.clientX;
-    pointerY = e.clientY;
-  });
-
-  function tick() {
-    ctx.clearRect(0, 0, w, h);
-    const colors = paletteColors[state.palette] || paletteColors.aurora;
-
-    blobs.forEach((b, i) => {
-      b.x += b.vx;
-      b.y += b.vy;
-      if (b.x < -150 || b.x > w + 150) b.vx *= -1;
-      if (b.y < -150 || b.y > h + 150) b.vy *= -1;
-
-      const grad = ctx.createRadialGradient(b.x, b.y, 10, b.x, b.y, b.r);
-      grad.addColorStop(0, colors[i % colors.length]);
-      grad.addColorStop(1, "transparent");
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    // Soft pointer light follower
-    if (state.glow > 0) {
-      const pGrad = ctx.createRadialGradient(pointerX, pointerY, 0, pointerX, pointerY, 260);
-      pGrad.addColorStop(0, colors[1]);
-      pGrad.addColorStop(1, "transparent");
-      ctx.globalAlpha = (state.glow / 100) * 0.55;
-      ctx.fillStyle = pGrad;
-      ctx.beginPath();
-      ctx.arc(pointerX, pointerY, 260, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalAlpha = 1;
-    }
-
-    requestAnimationFrame(tick);
-  }
-  tick();
-}
-
 function initParallaxAndMouseFX() {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const cursor = document.getElementById("spatial-cursor");
@@ -1069,21 +1082,26 @@ function bindEvents() {
   document.getElementById("hero-prev-top")?.addEventListener("click", () => stepHero(-1));
   document.getElementById("hero-next-top")?.addEventListener("click", () => stepHero(1));
 
-  // Smooth scroll targets & scroll spy
+  // Smooth scroll targets & dynamic omnibox URL scroll spy
   const scrollButtons = document.querySelectorAll("[data-scroll-target]");
   scrollButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      const target = document.getElementById(btn.dataset.scrollTarget);
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      const id = btn.dataset.scrollTarget;
+      const target = document.getElementById(id);
+      if (target) {
+        smoothScrollToElement(target);
+        updateOmniboxUrl(id === "overview" ? "/" : `/#${id}`);
+      }
     });
   });
 
-  const sections = ["overview", "portfolio", "services", "analytics", "connect"];
+  const sections = ["overview", "portfolio", "services", "blog-preview", "analytics", "connect"];
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           scrollButtons.forEach((b) => b.classList.toggle("active", b.dataset.scrollTarget === entry.target.id));
+          updateOmniboxUrl(entry.target.id === "overview" ? "/" : `/#${entry.target.id}`);
         }
       });
     },
@@ -1168,9 +1186,9 @@ function bindEvents() {
     saveState();
   });
 
-  // Copy domain & brief
+  // Copy active omnibox URL & brief
   document.getElementById("copy-domain-btn")?.addEventListener("click", async () => {
-    await navigator.clipboard?.writeText("https://idominiqe.com/");
+    await navigator.clipboard?.writeText(getCurrentOmniboxUrl());
     showToast(t("toast.urlCopied"));
   });
 
@@ -1208,10 +1226,13 @@ function bindEvents() {
 // ==========================================================================
 // BOOTSTRAP
 // ==========================================================================
+initScrollProgressBar();
+bindSmoothAnchorLinks((hash) => updateOmniboxUrl(`/${hash}`));
 renderPalettes();
+renderAnimPickers();
 renderSocials();
 applyThemeAndFX();
 applyLanguage();
 bindEvents();
-initAmbientCanvas();
+initBackgroundAnimations(() => state);
 initParallaxAndMouseFX();

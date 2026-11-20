@@ -22,9 +22,17 @@ export const TRANSLATIONS = {
       overview: "Overview",
       works: "Portfolio",
       services: "Services",
+      blog: "Blog",
       analytics: "Telemetry",
       connect: "Connect",
       studio: "Studio FX"
+    },
+    bgAnims: {
+      cubes: "3D Cubes",
+      constellation: "Cyber Nodes",
+      rings: "Prisms",
+      waves: "3D Grid",
+      aurora: "Aurora"
     },
     lighting: {
       dark: "Dark",
@@ -41,7 +49,8 @@ export const TRANSLATIONS = {
       liveQueue: "Live Spatial Stack",
       onlineCount: "6 Live",
       socialHub: "Neural Social Hub",
-      lightingTitle: "Theme & Lighting Quick-Mix",
+      lightingTitle: "Theme, Lighting & 3D Background",
+      animTitle: "Background Animation",
       studioBtn: "Full Studio FX",
       craftTitle: "Studio Craft Allocation",
       craftCenter: "Craft Index"
@@ -58,7 +67,11 @@ export const TRANSLATIONS = {
       analyticsSub: "Every build ships zero-bloat over Cloudflare global edge with smooth 60 FPS motion and multi-language readiness.",
       connectKicker: "Direct Channels",
       connectTitle: "Connect with iDominiqe",
-      connectSub: "Reach out directly on Discord, Telegram, Instagram, YouTube, Facebook, or explore the source code on GitHub."
+      connectSub: "Reach out directly on Discord, Telegram, Instagram, YouTube, Facebook, or explore the source code on GitHub.",
+      blogKicker: "Knowledge Base & Guides",
+      blogTitle: "Web, Domains, DNS / NS & Cybersecurity Blog",
+      blogSub: "Explore dedicated articles on DNS & Nameservers, HTTPS & WAF hardening, personal data privacy, and modern 3D web architecture.",
+      blogAllBtn: "Open Full Blog"
     },
     serviceSummary: {
       title: "Live Project Scope",
@@ -86,6 +99,7 @@ export const TRANSLATIONS = {
     },
     drawer: {
       title: "Studio Lighting & Background",
+      animations: "Background 3D Animations",
       palettes: "Color Palettes",
       lighting: "Glass Lighting",
       background: "Ambient Background / Wallpaper",
@@ -139,9 +153,17 @@ export const TRANSLATIONS = {
       overview: "Prezentare",
       works: "Portofoliu",
       services: "Servicii",
+      blog: "Blog",
       analytics: "Telemetrie",
       connect: "Contact",
       studio: "Studio FX"
+    },
+    bgAnims: {
+      cubes: "Cuburi 3D",
+      constellation: "Noduri Cyber",
+      rings: "Prisme",
+      waves: "Grilă 3D",
+      aurora: "Auroră"
     },
     lighting: {
       dark: "Întunecat",
@@ -158,7 +180,8 @@ export const TRANSLATIONS = {
       liveQueue: "Proiecte Active",
       onlineCount: "6 Live",
       socialHub: "Rețele Sociale",
-      lightingTitle: "Teme & Iluminare Rapidă",
+      lightingTitle: "Teme, Iluminare & Fundal 3D",
+      animTitle: "Animație Fundal",
       studioBtn: "Setări Studio FX",
       craftTitle: "Structura Tehnologică",
       craftCenter: "Indice Calitate"
@@ -175,7 +198,11 @@ export const TRANSLATIONS = {
       analyticsSub: "Fiecare proiect este livrat ultra-rapid prin Cloudflare cu animații fluide la 60 FPS și suport multilingv nativ.",
       connectKicker: "Canale Directe",
       connectTitle: "Conectează-te cu iDominiqe",
-      connectSub: "Scrie-mi direct pe Discord, Telegram, Instagram, YouTube, Facebook sau explorează codul pe GitHub."
+      connectSub: "Scrie-mi direct pe Discord, Telegram, Instagram, YouTube, Facebook sau explorează codul pe GitHub.",
+      blogKicker: "Bază de Cunoștințe & Ghiduri",
+      blogTitle: "Blog Web, Domenii, DNS / NS & Securitate",
+      blogSub: "Articole dedicate despre DNS, servere NS, securitate HTTPS/WAF, protecția datelor personale și arhitectură web modernă.",
+      blogAllBtn: "Deschide Blogul"
     },
     serviceSummary: {
       title: "Configurație Proiect",
@@ -203,6 +230,7 @@ export const TRANSLATIONS = {
     },
     drawer: {
       title: "Iluminare Studio & Fundal",
+      animations: "Animații 3D Fundal",
       palettes: "Palete de Culori",
       lighting: "Mod Iluminare Sticlă",
       background: "Fundal Ambiental / Imagine",
@@ -256,9 +284,17 @@ export const TRANSLATIONS = {
       overview: "Aperçu",
       works: "Portfolio",
       services: "Services",
+      blog: "Blog",
       analytics: "Télémétrie",
       connect: "Contact",
       studio: "Studio FX"
+    },
+    bgAnims: {
+      cubes: "Cubes 3D",
+      constellation: "Nœuds Cyber",
+      rings: "Prismes",
+      waves: "Grille 3D",
+      aurora: "Aurore"
     },
     lighting: {
       dark: "Sombre",
@@ -275,7 +311,8 @@ export const TRANSLATIONS = {
       liveQueue: "Pile Spatiale Active",
       onlineCount: "6 En ligne",
       socialHub: "Réseaux & Liens",
-      lightingTitle: "Thèmes & Éclairage Rapide",
+      lightingTitle: "Thèmes, Éclairage & Fond 3D",
+      animTitle: "Animation de Fond",
       studioBtn: "Contrôles Studio FX",
       craftTitle: "Répartition Technique",
       craftCenter: "Indice Qualité"
@@ -292,7 +329,11 @@ export const TRANSLATIONS = {
       analyticsSub: "Chaque site est optimisé sans surcharge, propulsé par Cloudflare avec support multilingue natif.",
       connectKicker: "Canaux Directs",
       connectTitle: "Contacter iDominiqe",
-      connectSub: "Discutons directement sur Discord, Telegram, Instagram, YouTube, Facebook ou explorez mes dépôts GitHub."
+      connectSub: "Discutons directement sur Discord, Telegram, Instagram, YouTube, Facebook ou explorez mes dépôts GitHub.",
+      blogKicker: "Base de Connaissances",
+      blogTitle: "Blog Web, Domaines, DNS / NS & Cybersécurité",
+      blogSub: "Articles dédiés sur le DNS et les serveurs NS, le durcissement HTTPS/WAF et la protection des données personnelles.",
+      blogAllBtn: "Ouvrir le Blog"
     },
     serviceSummary: {
       title: "Périmètre du Projet",
@@ -320,6 +361,7 @@ export const TRANSLATIONS = {
     },
     drawer: {
       title: "Éclairage Studio & Arrière-plan",
+      animations: "Animations 3D de Fond",
       palettes: "Palettes de Couleurs",
       lighting: "Mode d'Éclairage",
       background: "Arrière-plan / Image Personnalisée",
@@ -373,9 +415,17 @@ export const TRANSLATIONS = {
       overview: "Начало",
       works: "Портфолио",
       services: "Услуги",
+      blog: "Блог",
       analytics: "Телеметрия",
       connect: "Контакт",
       studio: "Студио FX"
+    },
+    bgAnims: {
+      cubes: "3D Кубчета",
+      constellation: "Кибер Възли",
+      rings: "Призми",
+      waves: "3D Мрежа",
+      aurora: "Аврора"
     },
     lighting: {
       dark: "Тъмен",
@@ -392,7 +442,8 @@ export const TRANSLATIONS = {
       liveQueue: "Активни Проекти",
       onlineCount: "6 На живо",
       socialHub: "Социални Мрежи",
-      lightingTitle: "Теми & Осветление",
+      lightingTitle: "Теми, Осветление & 3D Фон",
+      animTitle: "Фонова Анимация",
       studioBtn: "Пълни FX Настройки",
       craftTitle: "Технологичен Баланс",
       craftCenter: "Индекс Качество"
@@ -409,7 +460,11 @@ export const TRANSLATIONS = {
       analyticsSub: "Всеки проект зарежда мигновено през Cloudflare с плавни анимации и многоезична поддръжка.",
       connectKicker: "Директна Връзка",
       connectTitle: "Свържи се с iDominiqe",
-      connectSub: "Пиши директно в Discord, Telegram, Instagram, YouTube, Facebook или разгледай кода в GitHub."
+      connectSub: "Пиши директно в Discord, Telegram, Instagram, YouTube, Facebook или разгледай кода в GitHub.",
+      blogKicker: "База Знания & Статии",
+      blogTitle: "Блог за Сайтове, Домейни, DNS / NS & Киберсигурност",
+      blogSub: "Отделни статии за домейни и NS сървъри, защита на сайтове, лични данни и модерна 3D архитектура.",
+      blogAllBtn: "Отвори Блога"
     },
     serviceSummary: {
       title: "Обхват на Проекта",
@@ -437,6 +492,7 @@ export const TRANSLATIONS = {
     },
     drawer: {
       title: "Студио Осветление & Фон",
+      animations: "3D Фонови Анимации",
       palettes: "Цветови Палитри",
       lighting: "Режим на Стъклото",
       background: "Фонов Градиент / Изображение",
@@ -490,9 +546,17 @@ export const TRANSLATIONS = {
       overview: "Обзор",
       works: "Портфолио",
       services: "Услуги",
+      blog: "Блог",
       analytics: "Телеметрия",
       connect: "Контакты",
       studio: "Свет и FX"
+    },
+    bgAnims: {
+      cubes: "3D Кубики",
+      constellation: "Кибер-сеть",
+      rings: "Призмы",
+      waves: "3D Сетка",
+      aurora: "Аврора"
     },
     lighting: {
       dark: "Тёмный",
@@ -509,7 +573,8 @@ export const TRANSLATIONS = {
       liveQueue: "Активные проекты",
       onlineCount: "6 Онлайн",
       socialHub: "Соцсети и связь",
-      lightingTitle: "Палитры и освещение",
+      lightingTitle: "Палитры, свет и 3D-фон",
+      animTitle: "Анимация фона",
       studioBtn: "Настройки студии FX",
       craftTitle: "Баланс технологий",
       craftCenter: "Индекс качества"
@@ -526,7 +591,11 @@ export const TRANSLATIONS = {
       analyticsSub: "Проекты без лишней сборки летают на Cloudflare, держат 60 FPS и изначально поддерживают несколько языков.",
       connectKicker: "Прямые контакты",
       connectTitle: "Связаться с iDominiqe",
-      connectSub: "Напишите напрямую в Discord, Telegram, Instagram, YouTube, Facebook или посмотрите исходники на GitHub."
+      connectSub: "Напишите напрямую в Discord, Telegram, Instagram, YouTube, Facebook или посмотрите исходники на GitHub.",
+      blogKicker: "База знаний и статьи",
+      blogTitle: "Блог о сайтах, доменах, DNS / NS и кибербезопасности",
+      blogSub: "Отдельные страницы-гайды про домены, NS-серверы, защиту сайтов от атак, приватность личных данных и архитектуру.",
+      blogAllBtn: "Перейти в Блог"
     },
     serviceSummary: {
       title: "Конфигурация проекта",
@@ -554,6 +623,7 @@ export const TRANSLATIONS = {
     },
     drawer: {
       title: "Освещение, палитры и фон",
+      animations: "Анимации фона (3D / Эффекты)",
       palettes: "Цветовые палитры",
       lighting: "Режим освещения стекла",
       background: "Фоновый градиент или картинка",

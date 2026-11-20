@@ -15,8 +15,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/blog.css" />
 </head>
 <body class="custom-cursor-on">
+
+  <!-- ============ SCROLL PROGRESS BAR ============ -->
+  <div class="scroll-progress-track" aria-hidden="true"><div class="scroll-progress-bar" id="scroll-progress-bar"></div></div>
 
   <!-- ============ AMBIENT BACKGROUND STAGE ============ -->
   <div class="bg-stage" aria-hidden="true">
@@ -60,7 +64,7 @@
       <div class="domain-omnibox">
         <div class="domain-url">
           <span class="ssl-dot" title="Cloudflare SSL Active"></span>
-          <span>https://idominiqe.com</span>
+          <span id="omnibox-url-text">https://idominiqe.com/</span>
         </div>
         <div class="omnibox-actions">
           <button class="kbd-hint" id="copy-domain-btn" title="Copy domain link">Copy</button>
@@ -114,6 +118,9 @@
         <button class="dock-btn" data-scroll-target="services" data-tooltip="Services" data-i18n-tooltip="nav.services">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         </button>
+        <a class="dock-btn" href="blog/index.html" data-tooltip="Blog" data-i18n-tooltip="nav.blog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+        </a>
         <button class="dock-btn" data-scroll-target="analytics" data-tooltip="Telemetry" data-i18n-tooltip="nav.analytics">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
         </button>
@@ -142,6 +149,7 @@
             <button class="shell-tab" data-category="ecosystems" data-i18n="tabs.ecosystems">Smart Ecosystems</button>
             <button class="shell-tab" data-category="cyberpunk" data-i18n="tabs.cyberpunk">Cyberpunk &amp; Gaming</button>
             <button class="shell-tab" data-category="embeds" data-i18n="tabs.embeds">UI / Embeds</button>
+            <a class="shell-tab" href="blog/index.html" data-i18n="nav.blog">Blog</a>
           </nav>
 
           <a href="#connect" class="profile-pill" title="iDominiqe — Spatial Web Studio">
@@ -239,6 +247,10 @@
                     <button class="kbd-hint" id="open-studio-inline" data-i18n="bento.studioBtn">Full Studio FX</button>
                   </div>
                   <div class="palette-quick-pills" id="palette-quick-pills"></div>
+                  <div class="panel-head-row" style="margin-top:14px; margin-bottom:0;">
+                    <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);" data-i18n="bento.animTitle">Background Animation</span>
+                  </div>
+                  <div class="anim-quick-pills" id="quick-anim-list"></div>
                 </div>
 
                 <div class="bento-panel liquid-glass">
@@ -330,7 +342,22 @@
           </div>
         </section>
 
-        <!-- ========== SECTION 4: SPATIAL ANALYTICS & PERFORMANCE ========== -->
+        <!-- ========== SECTION 4: BLOG & KNOWLEDGE BASE ========== -->
+        <section class="shell-section" id="blog-preview">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker" data-i18n="sections.blogKicker">Knowledge Base &amp; Guides</div>
+              <h2 class="section-title" data-i18n="sections.blogTitle">Web, Domains, DNS / NS &amp; Cybersecurity Blog</h2>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-start; gap:10px;">
+              <p class="section-sub" data-i18n="sections.blogSub">Explore dedicated articles on DNS &amp; Nameservers, HTTPS &amp; WAF hardening, personal data privacy, and modern 3D web architecture.</p>
+              <a class="btn-primary-glass" href="blog/index.html" data-i18n="sections.blogAllBtn">Open Full Blog</a>
+            </div>
+          </div>
+          <div class="blog-grid" id="blog-preview-grid"></div>
+        </section>
+
+        <!-- ========== SECTION 5: SPATIAL ANALYTICS & PERFORMANCE ========== -->
         <section class="shell-section" id="analytics">
           <div class="section-head">
             <div>
@@ -433,6 +460,7 @@
     <button class="bottom-nav-btn active" data-scroll-target="overview" data-i18n="nav.overview">Overview</button>
     <button class="bottom-nav-btn" data-scroll-target="portfolio" data-i18n="nav.works">Portfolio</button>
     <button class="bottom-nav-btn" data-scroll-target="services" data-i18n="nav.services">Services</button>
+    <a class="bottom-nav-btn" href="blog/index.html" data-i18n="nav.blog">Blog</a>
     <button class="bottom-nav-btn" data-scroll-target="analytics" data-i18n="nav.analytics">Telemetry</button>
     <button class="bottom-nav-btn" data-scroll-target="connect" data-i18n="nav.connect">Connect</button>
     <button class="bottom-nav-btn" id="bottom-studio-btn">+ FX</button>
@@ -447,6 +475,11 @@
         <span data-i18n="drawer.title">Studio Lighting &amp; Background</span>
       </h2>
       <button class="pill-icon-btn" id="close-studio-btn" aria-label="Close drawer">✕</button>
+    </div>
+
+    <div class="drawer-group">
+      <span class="drawer-group-title" data-i18n="drawer.animations">Background 3D Animations</span>
+      <div class="anim-quick-pills" id="drawer-anim-list"></div>
     </div>
 
     <div class="drawer-group">
