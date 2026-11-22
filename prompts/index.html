@@ -140,6 +140,7 @@
 
       <div class="prompt-modal-toolbar">
         <div class="lighting-quick-pill">
+          <button class="light-mode-btn" id="modal-tab-video" data-modal-tab="video" data-prompt-i18n="videoTab" style="display:none;">🎬 Video</button>
           <button class="light-mode-btn active" data-modal-tab="preview" data-prompt-i18n="previewTab">Interactive Preview</button>
           <button class="light-mode-btn" data-modal-tab="prompt" data-prompt-i18n="promptTab">AI Prompt</button>
         </div>
@@ -155,7 +156,8 @@
 
       <div class="modal-stage-wrap" id="modal-stage-wrap">
         <div class="modal-device-frame" id="modal-device-frame">
-          <iframe id="modal-live-iframe" sandbox="" title="Live animated web template preview"></iframe>
+          <video id="modal-live-video" class="modal-video-player" muted loop playsinline controls style="display:none;"></video>
+          <iframe id="modal-live-iframe" sandbox="allow-scripts" title="Live animated web template preview"></iframe>
         </div>
       </div>
 

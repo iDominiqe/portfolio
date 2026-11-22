@@ -220,13 +220,27 @@ function renderPaletteAndAnimPickers() {
 }
 
 // ==========================================================================
-// GALLERY WITH LAZY VIEWPORT + STAGGERED PRELOAD FOR LIVE DEMO IFRAMES
+// GALLERY WITH LAZY VIEWPORT + STAGGERED PRELOAD FOR VIDEO & LIVE DEMOS
 // ==========================================================================
-function hydrateIframe(card, list) {
-  const iframe = card.querySelector("iframe");
-  if (!iframe || iframe.dataset.hydrated === "1") return;
+function hydrateCardMedia(card, list, autoPlay = false) {
   const item = list.find((p) => p.id === card.dataset.promptId);
   if (!item) return;
+
+  const video = card.querySelector("video.prompt-video-preview");
+  if (video) {
+    if (video.dataset.hydrated !== "1") {
+      video.preload = "auto";
+      video.src = video.dataset.videoSrc;
+      video.dataset.hydrated = "1";
+    }
+    if (autoPlay && video.paused) {
+      video.play().catch(() => {});
+    }
+    return;
+  }
+
+  const iframe = card.querySelector("iframe");
+  if (!iframe || iframe.dataset.hydrated === "1") return;
   iframe.srcdoc = item.previewHtml;
   iframe.dataset.hydrated = "1";
 }
@@ -273,14 +287,23 @@ function renderPromptsGallery() {
     .map((item) => {
       const title = item.title[state.lang] || item.title.en;
       const desc = item.desc[state.lang] || item.desc.en;
+      const mediaEl = item.videoUrl
+        ? `<video class="prompt-video-preview" data-video-src="${item.videoUrl}" muted loop playsinline preload="none" aria-label="${title}"></video>`
+        : `<iframe sandbox="allow-scripts" loading="lazy" title="${title}"></iframe>`;
+      const videoBadge = item.videoUrl
+        ? `<span class="video-badge-pill">🎬 ${ui.videoBadge || "Motion Video"}</span>`
+        : "";
       return `
       <article class="prompt-card liquid-glass" data-prompt-id="${item.id}">
         <div>
           <div class="prompt-viewport" data-open-demo="${item.id}" title="${ui.liveDemo}" style="background:${item.colors[2] || "#101218"}">
-            <iframe sandbox="" loading="lazy" title="${title}"></iframe>
+            ${mediaEl}
             <div class="prompt-viewport-overlay">
               <span class="project-cat-badge">${item.badge}</span>
-              <span class="swatch-row">${item.colors.map((c) => `<i class="swatch-mini" style="background:${c}"></i>`).join("")}</span>
+              <span style="display:flex; align-items:center; gap:6px;">
+                ${videoBadge}
+                <span class="swatch-row">${item.colors.map((c) => `<i class="swatch-mini" style="background:${c}"></i>`).join("")}</span>
+              </span>
             </div>
           </div>
 
@@ -314,9 +337,12 @@ function renderPromptsGallery() {
   cardObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
+        const video = entry.target.querySelector("video.prompt-video-preview");
         if (entry.isIntersecting) {
-          hydrateIframe(entry.target, list);
-          cardObserver.unobserve(entry.target);
+          hydrateCardMedia(entry.target, list, true);
+          if (!video) cardObserver.unobserve(entry.target);
+        } else if (video && !video.paused) {
+          video.pause();
         }
       });
     },
@@ -324,9 +350,9 @@ function renderPromptsGallery() {
   );
   cards.forEach((card) => cardObserver.observe(card));
 
-  // Background staggered preloader so offscreen demos are warm without blocking first paint
+  // Background staggered preloader so offscreen videos & demos buffer lazily after shell paint
   cards.forEach((card, idx) => {
-    setTimeout(() => hydrateIframe(card, list), 150 + idx * 140);
+    setTimeout(() => hydrateCardMedia(card, list, false), 150 + idx * 160);
   });
 
   grid.querySelectorAll("[data-open-demo]").forEach((el) =>
@@ -350,10 +376,36 @@ function syncModalView() {
   const codeBox = document.getElementById("modal-prompt-code");
   const deviceControls = document.getElementById("modal-device-controls");
   const deviceFrame = document.getElementById("modal-device-frame");
+  const videoEl = document.getElementById("modal-live-video");
+  const iframeEl = document.getElementById("modal-live-iframe");
+  const videoTabBtn = document.getElementById("modal-tab-video");
 
-  stage.style.display = activeModalTab === "preview" ? "flex" : "none";
-  deviceControls.style.display = activeModalTab === "preview" ? "inline-flex" : "none";
+  if (videoTabBtn) {
+    videoTabBtn.style.display = activeModalItem.videoUrl ? "inline-flex" : "none";
+  }
+
+  const isStageVisible = activeModalTab === "video" || activeModalTab === "preview";
+  stage.style.display = isStageVisible ? "flex" : "none";
+  deviceControls.style.display = isStageVisible ? "inline-flex" : "none";
   codeBox.style.display = activeModalTab === "prompt" ? "block" : "none";
+
+  if (videoEl && iframeEl) {
+    if (activeModalTab === "video" && activeModalItem.videoUrl) {
+      iframeEl.style.display = "none";
+      videoEl.style.display = "block";
+      if (videoEl.getAttribute("src") !== activeModalItem.videoUrl) {
+        videoEl.src = activeModalItem.videoUrl;
+      }
+      videoEl.play().catch(() => {});
+    } else {
+      if (!videoEl.paused) videoEl.pause();
+      videoEl.style.display = "none";
+      iframeEl.style.display = "block";
+      if (activeModalTab === "preview" && !iframeEl.srcdoc) {
+        iframeEl.srcdoc = activeModalItem.previewHtml;
+      }
+    }
+  }
 
   deviceFrame.classList.remove("is-tablet", "is-mobile");
   if (activeDevice === "tablet") deviceFrame.classList.add("is-tablet");
@@ -365,14 +417,22 @@ function syncModalView() {
 
 function openPromptModal(item) {
   activeModalItem = item;
-  activeModalTab = "preview";
+  activeModalTab = item.videoUrl ? "video" : "preview";
   activeDevice = "desktop";
 
   updateOmniboxUrl(`/prompts/#${item.id}`);
   document.getElementById("modal-prompt-badge").textContent = item.badge;
   document.getElementById("modal-prompt-title").textContent = item.title[state.lang] || item.title.en;
   document.getElementById("modal-prompt-code").textContent = item.prompt;
-  document.getElementById("modal-live-iframe").srcdoc = item.previewHtml;
+
+  const videoEl = document.getElementById("modal-live-video");
+  const iframeEl = document.getElementById("modal-live-iframe");
+  if (videoEl) {
+    videoEl.src = item.videoUrl || "";
+  }
+  if (iframeEl) {
+    iframeEl.srcdoc = item.previewHtml || "";
+  }
 
   syncModalView();
   document.getElementById("prompt-modal-backdrop").classList.add("open");
@@ -381,6 +441,12 @@ function openPromptModal(item) {
 function closePromptModal() {
   activeModalItem = null;
   document.getElementById("prompt-modal-backdrop").classList.remove("open");
+  const videoEl = document.getElementById("modal-live-video");
+  if (videoEl) {
+    videoEl.pause();
+    videoEl.removeAttribute("src");
+    videoEl.load();
+  }
   document.getElementById("modal-live-iframe").srcdoc = "";
   updateOmniboxUrl(activeCat === "all" ? "/prompts/" : `/prompts/?cat=${activeCat}`);
 }
