@@ -885,6 +885,14 @@ function renderCmdResults(query) {
         openProjectModal(p);
       }
     })),
+    {
+      label: `✨ ${t("nav.prompts")} — Live Web Demos & AI Prompts`,
+      hint: "/prompts/",
+      action: () => {
+        closeCmdPalette();
+        window.location.href = "prompts/index.html";
+      }
+    },
     ...ARTICLES.map((a) => ({
       label: `📘 ${a.title[state.lang] || a.title.en}`,
       hint: `/blog/${a.slug}`,

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-palette="aurora" data-lighting="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0e1c" />
+  <title>iDominiqe Prompts — Live Web Demos &amp; Copyable AI Prompts</title>
+  <meta name="description" content="Interactive web page demos and ready-to-copy AI prompts for Antigravity, Cursor, v0, Bolt, and Lovable by iDominiqe." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/blog.css" />
+  <link rel="stylesheet" href="../css/prompts.css" />
+</head>
+<body class="custom-cursor-on">
+
+  <div class="scroll-progress-track" aria-hidden="true"><div class="scroll-progress-bar" id="scroll-progress-bar"></div></div>
+
+  <div class="bg-stage" aria-hidden="true">
+    <canvas id="ambient-canvas"></canvas>
+    <div class="bg-wallpaper" id="bg-wallpaper"></div>
+    <div class="bg-dimmer"></div>
+    <div class="bg-noise"></div>
+  </div>
+
+  <div class="floating-3d-layer" id="floating-3d-layer" aria-hidden="true">
+    <div class="glass-artifact artifact-cube" data-depth="34"></div>
+    <div class="glass-artifact artifact-sphere" data-depth="24"></div>
+    <div class="glass-artifact artifact-ring" data-depth="40"></div>
+    <div class="glass-artifact artifact-prism" data-depth="28"></div>
+  </div>
+
+  <div class="spatial-cursor" id="spatial-cursor" aria-hidden="true">
+    <div class="cursor-halo" id="cursor-halo"></div>
+    <div class="cursor-core" id="cursor-core"></div>
+  </div>
+
+  <div class="toast-pill liquid-glass" id="toast-pill" role="status" aria-live="polite"></div>
+
+  <div class="parallax-stage">
+    <header class="top-spatial-bar liquid-glass">
+      <div class="bar-group">
+        <a class="pill-icon-btn" href="../index.html" title="Back to Portfolio" aria-label="Back to Portfolio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        </a>
+        <button class="pill-icon-btn" id="scroll-top-btn" title="Scroll to top" aria-label="Scroll to top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
+        </button>
+      </div>
+
+      <div class="domain-omnibox">
+        <div class="domain-url">
+          <span class="ssl-dot" title="Cloudflare SSL Active"></span>
+          <span id="omnibox-url-text">https://idominiqe.com/prompts/</span>
+        </div>
+        <div class="omnibox-actions">
+          <button class="kbd-hint" id="copy-domain-btn">Copy</button>
+        </div>
+      </div>
+
+      <div class="bar-group" style="flex-wrap: wrap;">
+        <div class="lang-switcher" role="group" aria-label="Language switcher">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="ro">RO</button>
+          <button class="lang-btn" data-lang="fr">FR</button>
+          <button class="lang-btn" data-lang="bg">BG</button>
+          <button class="lang-btn" data-lang="ru">RU</button>
+        </div>
+        <div class="lighting-quick-pill" role="group" aria-label="Lighting mode">
+          <button class="light-mode-btn active" data-lighting-set="dark">🌙 <span class="btn-label" data-i18n="lighting.dark">Dark</span></button>
+          <button class="light-mode-btn" data-lighting-set="light">☀️ <span class="btn-label" data-i18n="lighting.light">Light</span></button>
+          <button class="light-mode-btn" data-lighting-set="iridescent">💎 <span class="btn-label" data-i18n="lighting.iridescent">Prism</span></button>
+        </div>
+        <button class="pill-icon-btn" id="open-studio-btn" title="Studio Theme & Animations" aria-label="Open Studio Controls">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.86 1 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="spatial-workspace">
+      <aside class="left-dock liquid-glass" aria-label="Section navigation">
+        <a class="dock-btn" href="../index.html" data-tooltip="Portfolio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </a>
+        <a class="dock-btn active" href="./index.html" data-tooltip="AI Prompts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+        </a>
+        <a class="dock-btn" href="../blog/index.html" data-tooltip="Blog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+        </a>
+      </aside>
+
+      <main class="main-glass-shell liquid-glass" id="main-shell">
+        <div class="shell-header">
+          <label class="search-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="search" id="prompts-search" data-prompt-placeholder="searchPlaceholder" placeholder="Search styles, 3D, glass, SaaS..." />
+          </label>
+
+          <nav class="shell-tabs" id="prompts-cat-tabs" aria-label="Prompt categories"></nav>
+
+          <div style="display:flex; gap:8px;">
+            <a href="../blog/index.html" class="btn-secondary-glass" data-prompt-i18n="backBlog" style="padding:8px 14px;">Blog</a>
+            <a href="../index.html" class="btn-secondary-glass" data-prompt-i18n="backHome" style="padding:8px 14px;">Portfolio</a>
+          </div>
+        </div>
+
+        <section class="shell-section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker" data-prompt-i18n="kicker">Interactive Web Showcase &amp; AI Prompt Studio</div>
+              <h1 class="section-title" data-prompt-i18n="heading">Motion Web Demos &amp; Ready-to-Build AI Prompts</h1>
+            </div>
+            <p class="section-sub" data-prompt-i18n="sub">Preview original, animated web concepts live and copy structured senior-grade prompts for Antigravity, Cursor, v0, Bolt, or Lovable.</p>
+          </div>
+
+          <div class="prompts-grid" id="prompts-grid"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <nav class="bottom-pill-nav liquid-glass" aria-label="Prompts navigation bar">
+    <a class="bottom-nav-btn" href="../index.html" data-prompt-i18n="backHome">Portfolio</a>
+    <a class="bottom-nav-btn active" href="./index.html" data-i18n="nav.prompts">AI Prompts</a>
+    <a class="bottom-nav-btn" href="../blog/index.html" data-prompt-i18n="backBlog">Blog</a>
+  </nav>
+
+  <!-- LIVE DEMO & PROMPT INSPECTOR MODAL -->
+  <div class="modal-backdrop" id="prompt-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-prompt-title">
+    <div class="project-modal liquid-glass">
+      <div class="panel-head-row">
+        <div>
+          <span class="panel-badge" id="modal-prompt-badge">Liquid Glass OS</span>
+          <h2 class="section-title" id="modal-prompt-title" style="margin-top:6px;">Template Title</h2>
+        </div>
+        <button class="pill-icon-btn" id="close-prompt-modal" aria-label="Close">✕</button>
+      </div>
+
+      <div class="prompt-modal-toolbar">
+        <div class="lighting-quick-pill">
+          <button class="light-mode-btn active" data-modal-tab="preview" data-prompt-i18n="previewTab">Interactive Preview</button>
+          <button class="light-mode-btn" data-modal-tab="prompt" data-prompt-i18n="promptTab">AI Prompt</button>
+        </div>
+
+        <div class="lighting-quick-pill" id="modal-device-controls">
+          <button class="light-mode-btn active" data-device-size="desktop" data-prompt-i18n="viewDesktop">Desktop</button>
+          <button class="light-mode-btn" data-device-size="tablet" data-prompt-i18n="viewTablet">Tablet</button>
+          <button class="light-mode-btn" data-device-size="mobile" data-prompt-i18n="viewMobile">Mobile</button>
+        </div>
+
+        <button class="btn-primary-glass copy-prompt-btn" id="modal-copy-prompt" data-prompt-i18n="copyPrompt">Copy Prompt</button>
+      </div>
+
+      <div class="modal-stage-wrap" id="modal-stage-wrap">
+        <div class="modal-device-frame" id="modal-device-frame">
+          <iframe id="modal-live-iframe" sandbox="" title="Live animated web template preview"></iframe>
+        </div>
+      </div>
+
+      <pre class="prompt-code-box" id="modal-prompt-code" style="display:none;"></pre>
+    </div>
+  </div>
+
+  <!-- STUDIO FX DRAWER -->
+  <div class="studio-drawer-backdrop" id="studio-backdrop"></div>
+  <aside class="studio-drawer liquid-glass" id="studio-drawer" aria-label="Studio Controls">
+    <div class="panel-head-row">
+      <h2 class="panel-title">✨ <span data-i18n="drawer.title">Studio Lighting &amp; Background</span></h2>
+      <button class="pill-icon-btn" id="close-studio-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="drawer-group">
+      <span class="drawer-group-title" data-i18n="drawer.animations">Background 3D Animations</span>
+      <div class="anim-quick-pills" id="drawer-anim-list"></div>
+    </div>
+    <div class="drawer-group">
+      <span class="drawer-group-title" data-i18n="drawer.palettes">Color Palettes</span>
+      <div class="palette-quick-pills" id="drawer-palette-list"></div>
+    </div>
+    <div class="drawer-group">
+      <span class="drawer-group-title" data-i18n="drawer.background">Custom Wallpaper</span>
+      <div style="display:flex; gap:6px;"><input class="glass-input" id="custom-bg-url" type="url" placeholder="Paste image URL..." /><button class="btn-secondary-glass" id="apply-bg-url" style="padding:8px 12px;" data-i18n="drawer.bgApply">Apply</button></div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;"><label class="btn-secondary-glass" style="flex:1; justify-content:center;"><input type="file" id="upload-bg-file" accept="image/*" hidden /><span data-i18n="drawer.bgUpload">Upload Background</span></label><button class="btn-secondary-glass" id="reset-bg-btn" data-i18n="drawer.bgReset">Reset</button></div>
+    </div>
+    <div class="drawer-group" style="border-bottom:none;">
+      <span class="drawer-group-title" data-i18n="drawer.fx">Liquid Glass &amp; Parallax FX</span>
+      <label class="slider-row"><span class="slider-label"><span data-i18n="drawer.blur">Blur</span><strong id="val-blur">28px</strong></span><input type="range" id="ctrl-blur" min="8" max="48" value="28" /></label>
+      <label class="slider-row"><span class="slider-label"><span data-i18n="drawer.glow">Mouse Glow</span><strong id="val-glow">100%</strong></span><input type="range" id="ctrl-glow" min="0" max="150" value="100" /></label>
+      <label class="slider-row"><span class="slider-label"><span data-i18n="drawer.parallax">3D Parallax</span><strong id="val-parallax">100%</strong></span><input type="range" id="ctrl-parallax" min="0" max="160" value="100" /></label>
+      <label class="slider-row"><span class="slider-label"><span data-i18n="drawer.bgDim">Dimming</span><strong id="val-dim">28%</strong></span><input type="range" id="ctrl-dim" min="0" max="75" value="28" /></label>
+      <label class="slider-row"><span class="slider-label"><span data-i18n="drawer.bgBlur">BG Blur</span><strong id="val-bgblur">0px</strong></span><input type="range" id="ctrl-bgblur" min="0" max="24" value="0" /></label>
+      <label style="display:flex; justify-content:space-between; font-size:0.82rem; cursor:pointer;"><span data-i18n="drawer.shards">Floating 3D Shards</span><input type="checkbox" id="ctrl-shards" checked /></label>
+      <label style="display:flex; justify-content:space-between; font-size:0.82rem; cursor:pointer;"><span data-i18n="drawer.cursor">Spatial Cursor</span><input type="checkbox" id="ctrl-cursor" checked /></label>
+    </div>
+  </aside>
+
+  <script type="module" src="../js/prompts.js"></script>
+</body>
+</html>

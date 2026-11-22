@@ -23,6 +23,7 @@ export const TRANSLATIONS = {
       works: "Portfolio",
       services: "Services",
       blog: "Blog",
+      prompts: "AI Prompts",
       analytics: "Telemetry",
       connect: "Connect",
       studio: "Studio FX"
@@ -154,6 +155,7 @@ export const TRANSLATIONS = {
       works: "Portofoliu",
       services: "Servicii",
       blog: "Blog",
+      prompts: "Prompt-uri AI",
       analytics: "Telemetrie",
       connect: "Contact",
       studio: "Studio FX"
@@ -285,6 +287,7 @@ export const TRANSLATIONS = {
       works: "Portfolio",
       services: "Services",
       blog: "Blog",
+      prompts: "Prompts IA",
       analytics: "Télémétrie",
       connect: "Contact",
       studio: "Studio FX"
@@ -416,6 +419,7 @@ export const TRANSLATIONS = {
       works: "Портфолио",
       services: "Услуги",
       blog: "Блог",
+      prompts: "AI Промптове",
       analytics: "Телеметрия",
       connect: "Контакт",
       studio: "Студио FX"
@@ -547,6 +551,7 @@ export const TRANSLATIONS = {
       works: "Портфолио",
       services: "Услуги",
       blog: "Блог",
+      prompts: "ИИ Промпты",
       analytics: "Телеметрия",
       connect: "Контакты",
       studio: "Свет и FX"
