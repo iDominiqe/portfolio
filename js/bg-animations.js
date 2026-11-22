@@ -3,6 +3,7 @@
 // ==========================================================================
 
 export const BG_ANIMATIONS = [
+  { id: "none", icon: "⏹️" },
   { id: "cubes", icon: "🧊" },
   { id: "constellation", icon: "🕸️" },
   { id: "rings", icon: "🪐" },
@@ -422,14 +423,22 @@ export function initBackgroundAnimations(getConfig) {
   }
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let rafId = null;
 
   function loop() {
+    rafId = null;
+    const cfg = getConfig();
+
+    if (document.hidden || cfg.bgAnim === "none") {
+      ctx.clearRect(0, 0, w, h);
+      return;
+    }
+
     time += reduced ? 0.002 : 0.016;
     smoothPX += (pointerX - smoothPX) * 0.08;
     smoothPY += (pointerY - smoothPY) * 0.08;
 
     ctx.clearRect(0, 0, w, h);
-    const cfg = getConfig();
     const colors = getColors();
 
     switch (cfg.bgAnim) {
@@ -452,8 +461,28 @@ export function initBackgroundAnimations(getConfig) {
     }
 
     drawPointerSpotlight(colors, cfg);
-    requestAnimationFrame(loop);
+    rafId = requestAnimationFrame(loop);
   }
 
-  loop();
+  const wake = () => {
+    const cfg = getConfig();
+    if (cfg.bgAnim === "none") {
+      ctx.clearRect(0, 0, w, h);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      return;
+    }
+    if (!rafId && !document.hidden) {
+      rafId = requestAnimationFrame(loop);
+    }
+  };
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) wake();
+  });
+
+  wake();
+  return { wake };
 }

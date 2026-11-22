@@ -1,10 +1,8 @@
 // ==========================================================================
-// iDominiqe Spatial OS — AI Prompts & Live Web Demos Controller
+// iDominiqe Spatial OS — AI Prompts & Live Web Demos (Lazy + Preloaded)
 // ==========================================================================
 
 import { SUPPORTED_LANGS, TRANSLATIONS } from "./i18n.js";
-import { PROMPTS_UI, PROMPT_TEMPLATES } from "./prompts-data.js";
-import { BG_ANIMATIONS, initBackgroundAnimations } from "./bg-animations.js";
 import {
   smoothScrollToElement,
   updateOmniboxUrl,
@@ -12,7 +10,24 @@ import {
   initScrollProgressBar
 } from "./smooth-scroll.js";
 
+const STORAGE_KEY = "idominiqe_spatial_v2";
+
+let promptsDataMod = null;
+let bgAnimationsList = [{ id: "none", icon: "⏹️" }];
+let bgController = null;
+let parallaxController = null;
+let cardObserver = null;
+
+function scheduleIdle(fn, delay = 80) {
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(fn, { timeout: 600 });
+  } else {
+    setTimeout(fn, delay);
+  }
+}
+
 const PALETTES = [
+  { id: "flat", name: "Flat", swatch: "linear-gradient(135deg,#0f172a 50%,#f8fafc 50%)" },
   { id: "aurora", name: "Aurora", swatch: "linear-gradient(135deg,#8b5cf6,#38bdf8,#f472b6)" },
   { id: "vision", name: "Vision", swatch: "linear-gradient(135deg,#e5dfd5,#94a3b8,#fbbf24)" },
   { id: "cyber", name: "Cyber", swatch: "linear-gradient(135deg,#f43f5e,#fb923c,#38bdf8)" },
@@ -23,22 +38,22 @@ const PALETTES = [
 
 const DEFAULT_STATE = {
   lang: "en",
-  palette: "aurora",
+  palette: "flat",
   lighting: "dark",
-  bgAnim: "cubes",
+  bgAnim: "none",
   customBg: "",
-  blur: 28,
-  glow: 100,
-  parallax: 100,
-  dim: 28,
+  blur: 0,
+  glow: 0,
+  parallax: 0,
+  dim: 0,
   bgBlur: 0,
-  shards: true,
-  cursor: true
+  shards: false,
+  cursor: false
 };
 
 function loadState() {
   try {
-    const raw = localStorage.getItem("idominiqe_spatial_v1");
+    const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return { ...DEFAULT_STATE, ...JSON.parse(raw) };
   } catch {
     // ignore
@@ -56,7 +71,7 @@ let activeDevice = "desktop";
 
 function saveState() {
   try {
-    localStorage.setItem("idominiqe_spatial_v1", JSON.stringify(state));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch {
     // ignore
   }
@@ -68,7 +83,8 @@ function t(path) {
 }
 
 function pt() {
-  return PROMPTS_UI[state.lang] || PROMPTS_UI.en;
+  if (!promptsDataMod) return null;
+  return promptsDataMod.PROMPTS_UI[state.lang] || promptsDataMod.PROMPTS_UI.en;
 }
 
 function showToast(msg) {
@@ -80,13 +96,35 @@ function showToast(msg) {
   showToast._timer = setTimeout(() => el.classList.remove("show"), 2600);
 }
 
+function selectPalette(paletteId) {
+  state.palette = paletteId;
+  if (paletteId === "flat") {
+    state.bgAnim = "none";
+    state.blur = 0;
+    state.glow = 0;
+    state.parallax = 0;
+    state.dim = 0;
+    state.shards = false;
+    state.cursor = false;
+  } else {
+    if (state.blur === 0) state.blur = 24;
+    if (state.glow === 0) state.glow = 85;
+    if (state.parallax === 0) state.parallax = 75;
+    if (state.bgAnim === "none") state.bgAnim = "cubes";
+    state.shards = true;
+  }
+  applyThemeAndFX();
+  saveState();
+}
+
 async function copyPromptText(item, btnEl) {
   await navigator.clipboard?.writeText(item.prompt);
   const ui = pt();
-  showToast(ui.copied);
+  const copiedText = ui ? ui.copied : "Copied!";
+  showToast(copiedText);
   if (btnEl) {
     const orig = btnEl.textContent;
-    btnEl.textContent = `✓ ${ui.copied}`;
+    btnEl.textContent = `✓ ${copiedText}`;
     btnEl.classList.add("is-copied");
     setTimeout(() => {
       btnEl.textContent = orig;
@@ -143,6 +181,9 @@ function applyThemeAndFX() {
   const cursor = document.getElementById("ctrl-cursor");
   if (shards) shards.checked = state.shards;
   if (cursor) cursor.checked = state.cursor;
+
+  bgController?.wake();
+  parallaxController?.wake();
 }
 
 function renderPaletteAndAnimPickers() {
@@ -155,18 +196,14 @@ function renderPaletteAndAnimPickers() {
       </button>`
     ).join("");
     palBox.querySelectorAll("[data-palette-id]").forEach((btn) =>
-      btn.addEventListener("click", () => {
-        state.palette = btn.dataset.paletteId;
-        applyThemeAndFX();
-        saveState();
-      })
+      btn.addEventListener("click", () => selectPalette(btn.dataset.paletteId))
     );
   }
 
   const animBox = document.getElementById("drawer-anim-list");
   if (animBox) {
     const labels = t("bgAnims") || {};
-    animBox.innerHTML = BG_ANIMATIONS.map(
+    animBox.innerHTML = bgAnimationsList.map(
       (a) => `<button class="anim-chip ${state.bgAnim === a.id ? "active" : ""}" data-anim-id="${a.id}">
         <span aria-hidden="true">${a.icon}</span>
         <span>${labels[a.id] || a.id}</span>
@@ -183,12 +220,22 @@ function renderPaletteAndAnimPickers() {
 }
 
 // ==========================================================================
-// GALLERY & LIVE DEMO MODAL
+// GALLERY WITH LAZY VIEWPORT + STAGGERED PRELOAD FOR LIVE DEMO IFRAMES
 // ==========================================================================
+function hydrateIframe(card, list) {
+  const iframe = card.querySelector("iframe");
+  if (!iframe || iframe.dataset.hydrated === "1") return;
+  const item = list.find((p) => p.id === card.dataset.promptId);
+  if (!item) return;
+  iframe.srcdoc = item.previewHtml;
+  iframe.dataset.hydrated = "1";
+}
+
 function renderPromptsGallery() {
   const grid = document.getElementById("prompts-grid");
-  if (!grid) return;
+  if (!grid || !promptsDataMod) return;
   const ui = pt();
+  const { PROMPT_TEMPLATES } = promptsDataMod;
 
   document.title = ui.pageTitle;
   if (!activeModalItem) {
@@ -229,7 +276,7 @@ function renderPromptsGallery() {
       return `
       <article class="prompt-card liquid-glass" data-prompt-id="${item.id}">
         <div>
-          <div class="prompt-viewport" data-open-demo="${item.id}" title="${ui.liveDemo}">
+          <div class="prompt-viewport" data-open-demo="${item.id}" title="${ui.liveDemo}" style="background:${item.colors[2] || "#101218"}">
             <iframe sandbox="" loading="lazy" title="${title}"></iframe>
             <div class="prompt-viewport-overlay">
               <span class="project-cat-badge">${item.badge}</span>
@@ -261,11 +308,25 @@ function renderPromptsGallery() {
     })
     .join("");
 
-  // Populate sandboxed srcdoc safely via DOM property
-  list.forEach((item) => {
-    const card = grid.querySelector(`[data-prompt-id="${item.id}"]`);
-    const iframe = card?.querySelector("iframe");
-    if (iframe) iframe.srcdoc = item.previewHtml;
+  if (cardObserver) cardObserver.disconnect();
+  const cards = Array.from(grid.querySelectorAll(".prompt-card"));
+
+  cardObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          hydrateIframe(entry.target, list);
+          cardObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { rootMargin: "160px" }
+  );
+  cards.forEach((card) => cardObserver.observe(card));
+
+  // Background staggered preloader so offscreen demos are warm without blocking first paint
+  cards.forEach((card, idx) => {
+    setTimeout(() => hydrateIframe(card, list), 150 + idx * 140);
   });
 
   grid.querySelectorAll("[data-open-demo]").forEach((el) =>
@@ -335,19 +396,21 @@ function applyLanguage() {
     const val = t(el.dataset.i18n);
     if (typeof val === "string") el.textContent = val;
   });
-  document.querySelectorAll("[data-prompt-i18n]").forEach((el) => {
-    const val = el.dataset.promptI18n.split(".").reduce((a, p) => (a ? a[p] : undefined), ui);
-    if (typeof val === "string") el.textContent = val;
-  });
-  document.querySelectorAll("[data-prompt-placeholder]").forEach((el) => {
-    const val = el.dataset.promptPlaceholder.split(".").reduce((a, p) => (a ? a[p] : undefined), ui);
-    if (typeof val === "string") el.placeholder = val;
-  });
+  if (ui) {
+    document.querySelectorAll("[data-prompt-i18n]").forEach((el) => {
+      const val = el.dataset.promptI18n.split(".").reduce((a, p) => (a ? a[p] : undefined), ui);
+      if (typeof val === "string") el.textContent = val;
+    });
+    document.querySelectorAll("[data-prompt-placeholder]").forEach((el) => {
+      const val = el.dataset.promptPlaceholder.split(".").reduce((a, p) => (a ? a[p] : undefined), ui);
+      if (typeof val === "string") el.placeholder = val;
+    });
+  }
 
   document.querySelectorAll(".lang-btn").forEach((b) => b.classList.toggle("active", b.dataset.lang === state.lang));
 
   renderPaletteAndAnimPickers();
-  renderPromptsGallery();
+  if (promptsDataMod) renderPromptsGallery();
 }
 
 function initParallaxCursor() {
@@ -364,44 +427,61 @@ function initParallaxCursor() {
   let ty = 0;
   let cx = 0;
   let cy = 0;
+  let rafId = null;
 
   window.addEventListener("pointermove", (e) => {
+    if (state.palette === "flat" && state.parallax === 0 && !state.cursor && state.glow === 0) return;
+
     mx = e.clientX;
     my = e.clientY;
     tx = (mx / window.innerWidth - 0.5) * 2;
     ty = (my / window.innerHeight - 0.5) * 2;
-    if (core) {
+    if (core && state.cursor) {
       core.style.left = `${mx}px`;
       core.style.top = `${my}px`;
     }
-    const card = e.target.closest(".liquid-glass");
-    if (card) {
-      const r = card.getBoundingClientRect();
-      card.style.setProperty("--mx", `${mx - r.left}px`);
-      card.style.setProperty("--my", `${my - r.top}px`);
+    if (state.glow > 0) {
+      const card = e.target.closest(".liquid-glass");
+      if (card) {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${mx - r.left}px`);
+        card.style.setProperty("--my", `${my - r.top}px`);
+      }
     }
-    if (cursor) cursor.classList.toggle("is-hover", Boolean(e.target.closest("a, button, .prompt-viewport")));
+    if (cursor && state.cursor) {
+      cursor.classList.toggle("is-hover", Boolean(e.target.closest("a, button, .prompt-viewport")));
+    }
   });
 
   function tick() {
+    rafId = null;
+    if (document.hidden || (state.parallax === 0 && !state.cursor)) return;
+
     cx += (tx - cx) * 0.08;
     cy += (ty - cy) * 0.08;
     hx += (mx - hx) * 0.16;
     hy += (my - hy) * 0.16;
-    if (halo) {
+    if (halo && state.cursor) {
       halo.style.left = `${hx}px`;
       halo.style.top = `${hy}px`;
     }
-    if (state.parallax > 0) {
+    if (state.parallax > 0 && state.shards) {
       const f = state.parallax / 100;
       artifacts.forEach((art, idx) => {
         const d = Number(art.dataset.depth || 24) * f;
         art.style.transform = `translate3d(${cx * d}px, ${cy * d}px, 0) rotate(${idx * 18 + cx * 14 * f}deg)`;
       });
     }
-    requestAnimationFrame(tick);
+    rafId = requestAnimationFrame(tick);
   }
-  tick();
+
+  const wake = () => {
+    if (!rafId && !document.hidden && (state.parallax > 0 || state.cursor)) {
+      rafId = requestAnimationFrame(tick);
+    }
+  };
+  wake();
+  return { wake };
 }
 
 function bindEvents() {
@@ -435,7 +515,6 @@ function bindEvents() {
     smoothScrollToElement(document.getElementById("main-shell"), 92);
   });
 
-  // Modal controls
   document.querySelectorAll("[data-modal-tab]").forEach((btn) =>
     btn.addEventListener("click", () => {
       activeModalTab = btn.dataset.modalTab;
@@ -456,7 +535,6 @@ function bindEvents() {
     if (e.target.id === "prompt-modal-backdrop") closePromptModal();
   });
 
-  // Studio Drawer
   const setDrawer = (open) => {
     document.getElementById("studio-drawer")?.classList.toggle("open", open);
     document.getElementById("studio-backdrop")?.classList.toggle("open", open);
@@ -525,12 +603,23 @@ function bindEvents() {
 }
 
 // ==========================================================================
-// BOOTSTRAP
+// BOOTSTRAP (STAGE 1: SHELL -> STAGE 2: STAGED PRELOADING)
 // ==========================================================================
 initScrollProgressBar();
 renderPaletteAndAnimPickers();
 applyThemeAndFX();
 applyLanguage();
 bindEvents();
-initBackgroundAnimations(() => state);
-initParallaxCursor();
+parallaxController = initParallaxCursor();
+
+scheduleIdle(async () => {
+  const [pMod, bgMod] = await Promise.all([
+    import("./prompts-data.js"),
+    import("./bg-animations.js")
+  ]);
+  promptsDataMod = pMod;
+  bgAnimationsList = bgMod.BG_ANIMATIONS;
+  bgController = bgMod.initBackgroundAnimations(() => state);
+
+  applyLanguage();
+}, 40);

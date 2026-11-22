@@ -29,6 +29,7 @@ export const TRANSLATIONS = {
       studio: "Studio FX"
     },
     bgAnims: {
+      none: "Off (Flat)",
       cubes: "3D Cubes",
       constellation: "Cyber Nodes",
       rings: "Prisms",
@@ -161,6 +162,7 @@ export const TRANSLATIONS = {
       studio: "Studio FX"
     },
     bgAnims: {
+      none: "Oprit (Flat)",
       cubes: "Cuburi 3D",
       constellation: "Noduri Cyber",
       rings: "Prisme",
@@ -293,6 +295,7 @@ export const TRANSLATIONS = {
       studio: "Studio FX"
     },
     bgAnims: {
+      none: "Désactivé (Flat)",
       cubes: "Cubes 3D",
       constellation: "Nœuds Cyber",
       rings: "Prismes",
@@ -425,6 +428,7 @@ export const TRANSLATIONS = {
       studio: "Студио FX"
     },
     bgAnims: {
+      none: "Изкл (Flat)",
       cubes: "3D Кубчета",
       constellation: "Кибер Възли",
       rings: "Призми",
@@ -557,6 +561,7 @@ export const TRANSLATIONS = {
       studio: "Свет и FX"
     },
     bgAnims: {
+      none: "Выкл (Flat)",
       cubes: "3D Кубики",
       constellation: "Кибер-сеть",
       rings: "Призмы",

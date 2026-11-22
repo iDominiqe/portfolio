@@ -3,8 +3,6 @@
 // ==========================================================================
 
 import { SUPPORTED_LANGS, TRANSLATIONS } from "./i18n.js";
-import { BG_ANIMATIONS, initBackgroundAnimations } from "./bg-animations.js";
-import { BLOG_UI, ARTICLES } from "./blog-data.js";
 import {
   smoothScrollToElement,
   updateOmniboxUrl,
@@ -13,7 +11,23 @@ import {
   bindSmoothAnchorLinks
 } from "./smooth-scroll.js";
 
+const STORAGE_KEY = "idominiqe_spatial_v2";
+
+let bgAnimationsList = [{ id: "none", icon: "⏹️" }];
+let bgController = null;
+let parallaxController = null;
+let blogDataModule = null;
+
+function scheduleIdle(fn, delay = 90) {
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(fn, { timeout: 600 });
+  } else {
+    setTimeout(fn, delay);
+  }
+}
+
 const PALETTES = [
+  { id: "flat", name: "Flat", swatch: "linear-gradient(135deg,#0f172a 50%,#f8fafc 50%)" },
   { id: "aurora", name: "Aurora", swatch: "linear-gradient(135deg,#8b5cf6,#38bdf8,#f472b6)" },
   { id: "vision", name: "Vision", swatch: "linear-gradient(135deg,#e5dfd5,#94a3b8,#fbbf24)" },
   { id: "cyber", name: "Cyber", swatch: "linear-gradient(135deg,#f43f5e,#fb923c,#38bdf8)" },
@@ -382,27 +396,27 @@ const WALLPAPER_PRESETS = {
 // ==========================================================================
 const DEFAULT_STATE = {
   lang: "en",
-  palette: "aurora",
+  palette: "flat",
   lighting: "dark",
-  bgAnim: "cubes",
+  bgAnim: "none",
   category: "all",
   search: "",
   heroIndex: 0,
   bgPreset: "mesh",
   customBg: "",
-  blur: 28,
-  glow: 100,
-  parallax: 100,
-  dim: 28,
+  blur: 0,
+  glow: 0,
+  parallax: 0,
+  dim: 0,
   bgBlur: 0,
-  shards: true,
-  cursor: true,
+  shards: false,
+  cursor: false,
   selectedServices: ["glass", "webgl", "parallax", "i18n"]
 };
 
 function loadState() {
   try {
-    const raw = localStorage.getItem("idominiqe_spatial_v1");
+    const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
       return { ...DEFAULT_STATE, ...parsed };
@@ -421,10 +435,31 @@ const state = loadState();
 
 function saveState() {
   try {
-    localStorage.setItem("idominiqe_spatial_v1", JSON.stringify(state));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch {
     // Ignore quota errors
   }
+}
+
+function selectPalette(paletteId) {
+  state.palette = paletteId;
+  if (paletteId === "flat") {
+    state.bgAnim = "none";
+    state.blur = 0;
+    state.glow = 0;
+    state.parallax = 0;
+    state.dim = 0;
+    state.shards = false;
+    state.cursor = false;
+  } else {
+    if (state.blur === 0) state.blur = 24;
+    if (state.glow === 0) state.glow = 85;
+    if (state.parallax === 0) state.parallax = 75;
+    if (state.bgAnim === "none") state.bgAnim = "cubes";
+    state.shards = true;
+  }
+  applyThemeAndFX();
+  saveState();
 }
 
 function t(path) {
@@ -469,10 +504,12 @@ function applyLanguage() {
 
   renderHero();
   renderMiniBuilds();
-  renderPortfolioGrid();
-  renderServices();
-  renderAnimPickers();
-  renderBlogPreview();
+  if (deferredHydrated) {
+    renderPortfolioGrid();
+    renderServices();
+    renderAnimPickers();
+    renderBlogPreview();
+  }
 }
 
 function applyThemeAndFX() {
@@ -533,6 +570,13 @@ function applyThemeAndFX() {
   const cursorToggle = document.getElementById("ctrl-cursor");
   if (shardsToggle) shardsToggle.checked = state.shards;
   if (cursorToggle) cursorToggle.checked = state.cursor;
+
+  if (state.parallax === 0) {
+    const shell = document.getElementById("main-shell");
+    if (shell) shell.style.transform = "";
+  }
+  bgController?.wake();
+  parallaxController?.wake();
 }
 
 function renderPalettes() {
@@ -549,11 +593,7 @@ function renderPalettes() {
     ).join("");
 
     container.querySelectorAll("[data-palette-id]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        state.palette = btn.dataset.paletteId;
-        applyThemeAndFX();
-        saveState();
-      });
+      btn.addEventListener("click", () => selectPalette(btn.dataset.paletteId));
     });
   }
 }
@@ -563,7 +603,7 @@ function renderAnimPickers() {
   for (const targetId of ["quick-anim-list", "drawer-anim-list"]) {
     const box = document.getElementById(targetId);
     if (!box) continue;
-    box.innerHTML = BG_ANIMATIONS.map(
+    box.innerHTML = bgAnimationsList.map(
       (a) => `
       <button class="anim-chip ${state.bgAnim === a.id ? "active" : ""}" data-anim-id="${a.id}">
         <span aria-hidden="true">${a.icon}</span>
@@ -583,7 +623,8 @@ function renderAnimPickers() {
 
 function renderBlogPreview() {
   const grid = document.getElementById("blog-preview-grid");
-  if (!grid) return;
+  if (!grid || !blogDataModule) return;
+  const { BLOG_UI, ARTICLES } = blogDataModule;
   const ui = BLOG_UI[state.lang] || BLOG_UI.en;
   grid.innerHTML = ARTICLES.map((a) => {
     const title = a.title[state.lang] || a.title.en;
@@ -893,7 +934,7 @@ function renderCmdResults(query) {
         window.location.href = "prompts/index.html";
       }
     },
-    ...ARTICLES.map((a) => ({
+    ...(blogDataModule?.ARTICLES || []).map((a) => ({
       label: `📘 ${a.title[state.lang] || a.title.en}`,
       hint: `/blog/${a.slug}`,
       action: () => {
@@ -901,7 +942,7 @@ function renderCmdResults(query) {
         window.location.href = `blog/${a.file}`;
       }
     })),
-    ...BG_ANIMATIONS.map((a) => ({
+    ...bgAnimationsList.map((a) => ({
       label: `${a.icon} BG Animation: ${(t("bgAnims") || {})[a.id] || a.id}`,
       hint: "Canvas FX",
       action: () => {
@@ -915,9 +956,7 @@ function renderCmdResults(query) {
       label: `🎨 Palette: ${pal.name}`,
       hint: "Theme",
       action: () => {
-        state.palette = pal.id;
-        applyThemeAndFX();
-        saveState();
+        selectPalette(pal.id);
         closeCmdPalette();
       }
     })),
@@ -981,36 +1020,46 @@ function initParallaxAndMouseFX() {
   let mouseY = window.innerHeight * 0.5;
   let haloX = mouseX;
   let haloY = mouseY;
+  let rafId = null;
 
   window.addEventListener("pointermove", (e) => {
+    if (state.palette === "flat" && state.parallax === 0 && !state.cursor && state.glow === 0) return;
+
     mouseX = e.clientX;
     mouseY = e.clientY;
     targetX = (e.clientX / window.innerWidth - 0.5) * 2;
     targetY = (e.clientY / window.innerHeight - 0.5) * 2;
 
-    if (core) {
+    if (core && state.cursor) {
       core.style.left = `${mouseX}px`;
       core.style.top = `${mouseY}px`;
     }
 
-    const glassTarget = e.target.closest(".liquid-glass");
-    if (glassTarget) {
-      const rect = glassTarget.getBoundingClientRect();
-      glassTarget.style.setProperty("--mx", `${e.clientX - rect.left}px`);
-      glassTarget.style.setProperty("--my", `${e.clientY - rect.top}px`);
+    if (state.glow > 0) {
+      const glassTarget = e.target.closest(".liquid-glass");
+      if (glassTarget) {
+        const rect = glassTarget.getBoundingClientRect();
+        glassTarget.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+        glassTarget.style.setProperty("--my", `${e.clientY - rect.top}px`);
+      }
     }
 
-    const interactive = e.target.closest("a, button, .project-card, .service-toggle-card, .mini-build-item");
-    if (cursor) cursor.classList.toggle("is-hover", Boolean(interactive));
+    if (cursor && state.cursor) {
+      const interactive = e.target.closest("a, button, .project-card, .service-toggle-card, .mini-build-item");
+      cursor.classList.toggle("is-hover", Boolean(interactive));
+    }
   });
 
   function animate() {
+    rafId = null;
+    if (document.hidden || (state.parallax === 0 && !state.cursor)) return;
+
     curX += (targetX - curX) * 0.08;
     curY += (targetY - curY) * 0.08;
     haloX += (mouseX - haloX) * 0.16;
     haloY += (mouseY - haloY) * 0.16;
 
-    if (halo) {
+    if (halo && state.cursor) {
       halo.style.left = `${haloX}px`;
       halo.style.top = `${haloY}px`;
     }
@@ -1026,18 +1075,28 @@ function initParallaxAndMouseFX() {
         shell.style.transform = "";
       }
 
-      artifacts.forEach((art, idx) => {
-        const depth = Number(art.dataset.depth || 25) * factor;
-        const tx = curX * depth;
-        const ty = curY * depth - scrollY * (0.04 + idx * 0.015);
-        const rot = idx * 18 + curX * 14 * factor;
-        art.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg)`;
-      });
+      if (state.shards) {
+        artifacts.forEach((art, idx) => {
+          const depth = Number(art.dataset.depth || 25) * factor;
+          const tx = curX * depth;
+          const ty = curY * depth - scrollY * (0.04 + idx * 0.015);
+          const rot = idx * 18 + curX * 14 * factor;
+          art.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg)`;
+        });
+      }
     }
 
-    requestAnimationFrame(animate);
+    rafId = requestAnimationFrame(animate);
   }
-  animate();
+
+  const wake = () => {
+    if (!rafId && !document.hidden && (state.parallax > 0 || state.cursor)) {
+      rafId = requestAnimationFrame(animate);
+    }
+  };
+
+  wake();
+  return { wake };
 }
 
 // ==========================================================================
@@ -1232,15 +1291,39 @@ function bindEvents() {
 }
 
 // ==========================================================================
-// BOOTSTRAP
+// BOOTSTRAP (STAGE 1: FAST FLAT SHELL -> STAGE 2: STAGED IDLE PRELOADING)
 // ==========================================================================
+let deferredHydrated = false;
+
 initScrollProgressBar();
 bindSmoothAnchorLinks((hash) => updateOmniboxUrl(`/${hash}`));
 renderPalettes();
-renderAnimPickers();
 renderSocials();
 applyThemeAndFX();
 applyLanguage();
 bindEvents();
-initBackgroundAnimations(() => state);
-initParallaxAndMouseFX();
+parallaxController = initParallaxAndMouseFX();
+
+// Preload heavy / secondary components only after initial page render
+scheduleIdle(async () => {
+  renderPortfolioGrid();
+  renderServices();
+  deferredHydrated = true;
+
+  const [bgMod, blogMod] = await Promise.all([
+    import("./bg-animations.js"),
+    import("./blog-data.js")
+  ]);
+
+  bgAnimationsList = bgMod.BG_ANIMATIONS;
+  blogDataModule = blogMod;
+  bgController = bgMod.initBackgroundAnimations(() => state);
+
+  renderAnimPickers();
+  renderBlogPreview();
+
+  // Warm-preload prompt templates in idle background for instant /prompts/ launch
+  scheduleIdle(() => {
+    import("./prompts-data.js").catch(() => {});
+  }, 400);
+}, 50);
