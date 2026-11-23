@@ -89,6 +89,58 @@ const SOCIALS = [
 
 const PROJECTS = [
   {
+    id: "smartcity-v3",
+    category: "ecosystems",
+    categories: ["all", "webgl", "ecosystems", "embeds"],
+    domain: "smartcity-v3.idominiqe.com",
+    liveUrl: "https://smartcity-v3.idominiqe.com/",
+    repoUrl: "https://github.com/iDominiqe/smartcity-v3",
+    langs: "EN · FR · RU · BG · RO",
+    stack: ["Three.js", "RoomEnvironment PBR", "GLSL Shaders", "WASM + Worker"],
+    gradient: "linear-gradient(135deg, #0ea5e9 0%, #10b981 52%, #0f172a 100%)",
+    accentBadge: "SolarSync 3D v3",
+    title: {
+      en: "NEO Smart-City v3 — SolarSync 3D Energy Dashboard",
+      ro: "NEO Smart-City v3 — Tablou de Bord Energetic 3D SolarSync",
+      fr: "NEO Smart-City v3 — Tableau de Bord Énergétique 3D SolarSync",
+      bg: "NEO Smart-City v3 — 3D Енергийно Табло SolarSync",
+      ru: "NEO Smart-City v3 — 3D Энергодашборд SolarSync"
+    },
+    desc: {
+      en: "Photorealistic studio-daylight 3D Smart City energy command center with frosted-glass telemetry widgets, isolated 3D studios (home, EV charger, HVAC, parking), and Light/Dark/Eco-PC/Clay modes.",
+      ro: "Centru de comandă 3D fotorealist pentru energie solară cu widget-uri din sticlă mată, studiouri 3D izolate (casă, stație EV, HVAC, parcare) și profiluri Light/Dark/Eco-PC/Clay.",
+      fr: "Centre de commande énergétique 3D photoréaliste avec widgets en verre dépoli, studios 3D isolés (maison, borne EV, climatisation, parking) et modes Light/Dark/Eco-PC/Clay.",
+      bg: "Фотореалистичен 3D енергиен команден център със стъклени телеметрични уиджети, изолирани 3D студиа (дом, EV станция, HVAC, паркинг) и профили Light/Dark/Eco-PC/Clay.",
+      ru: "Фотореалистичный 3D-дашборд умного города в студийном освещении с виджетами телеметрии, изолированными 3D-студиями (дом, зарядка, климат, паркинг) и режимами Light/Dark/Eco-PC/Clay."
+    }
+  },
+  {
+    id: "smartcity-v2",
+    category: "ecosystems",
+    categories: ["all", "webgl", "ecosystems", "embeds"],
+    domain: "smartcity-v2.idominiqe.com",
+    liveUrl: "https://smartcity-v2.idominiqe.com/",
+    repoUrl: "https://github.com/iDominiqe/smartcity-v2",
+    langs: "EN · FR · BG · RO · RU",
+    stack: ["Three.js", "GLSL Topographic", "WebAssembly", "Eco-PC Mode"],
+    gradient: "linear-gradient(135deg, #0284c7 0%, #14b8a6 52%, #1e293b 100%)",
+    accentBadge: "3D Spatial v2",
+    title: {
+      en: "NEO Smart-City v2 — Multi-Page WebGL & WASM Ecosystem",
+      ro: "NEO Smart-City v2 — Ecosistem 3D WebGL & WebAssembly",
+      fr: "NEO Smart-City v2 — Écosystème WebGL & WebAssembly Multi-Pages",
+      bg: "NEO Smart-City v2 — Многостранична WebGL & WebAssembly Екосистема",
+      ru: "NEO Smart-City v2 — Многостраничная 3D-экосистема (WebGL + WASM)"
+    },
+    desc: {
+      en: "Low-PC-optimized multi-page 3D Smart City spatial command center with SD Clay / HD Rich quality switch, WebAssembly projection kernel, background Web Worker stream, and ROI calculators.",
+      ro: "Centru spațial 3D optimizat pentru PC-uri slabe cu comutare SD Clay / HD Rich, nucleu de proiecție WebAssembly, flux Web Worker și calculatoare de rentabilitate.",
+      fr: "Interface 3D optimisée multi-pages avec profils SD Clay / HD Rich, noyau de projection WebAssembly, flux Web Worker et calculateurs d'ingénierie ROI.",
+      bg: "Оптимизиран 3D Смарт Сити с избор на качество SD Clay / HD Rich, WebAssembly ядро за проекция, Web Worker телеметрия и инженерни калкулатори.",
+      ru: "Оптимизированный под слабые ПК многостраничный 3D Smart City с переключением SD Clay / HD Rich, ядром WebAssembly, Web Worker потоком и калькуляторами ROI."
+    }
+  },
+  {
     id: "smartcity",
     category: "ecosystems",
     categories: ["all", "webgl", "ecosystems"],
@@ -98,13 +150,13 @@ const PROJECTS = [
     langs: "EN · FR · BG · RO",
     stack: ["Three.js", "WebGL", "ES6 Modules", "ROI Engine"],
     gradient: "linear-gradient(135deg, #064e3b 0%, #0284c7 52%, #0f172a 100%)",
-    accentBadge: "3D Solar Smart City",
+    accentBadge: "3D Solar City v1",
     title: {
-      en: "Smart-City-Led — 3D Solar City & EV Ecosystem",
-      ro: "Smart-City-Led — Oraș Solar 3D & Ecosistem EV",
-      fr: "Smart-City-Led — Ville Solaire 3D & Écosystème EV",
-      bg: "Smart-City-Led — 3D Соларен Град & EV Екосистема",
-      ru: "Smart-City-Led — 3D Солнечный Город и EV-Экосистема"
+      en: "NEO Smart-City v1 — 3D Solar City & EV Ecosystem",
+      ro: "NEO Smart-City v1 — Oraș Solar 3D & Ecosistem EV",
+      fr: "NEO Smart-City v1 — Ville Solaire 3D & Écosystème EV",
+      bg: "NEO Smart-City v1 — 3D Соларен Град & EV Екосистема",
+      ru: "NEO Smart-City v1 — 3D Солнечный Город и EV-Экосистема"
     },
     desc: {
       en: "Scroll-driven 3D city transitioning from daylight photovoltaic farms and solar EV fast-charging into an illuminated smart-home night ecosystem with live ROI calculations.",
@@ -112,58 +164,6 @@ const PROJECTS = [
       fr: "Expérience 3D pilotée au défilement : fermes photovoltaïques, recharge EV solaire et maison intelligente nocturne avec calculateur ROI intégré.",
       bg: "Интерактивен 3D град със скрол анимация: от дневни фотоволтаични паркове и EV зарядни станции до нощна умна мрежа с ROI калкулатор.",
       ru: "Интерактивный 3D-город со скролл-сценарием: от дневных солнечных ферм и зарядок EV до ночного умного дома с калькулятором окупаемости ROI."
-    }
-  },
-  {
-    id: "huwart",
-    category: "ecosystems",
-    categories: ["all", "webgl", "ecosystems"],
-    domain: "smartcity.idominiqe.com",
-    liveUrl: "https://smartcity.idominiqe.com/",
-    repoUrl: "https://github.com/iDominiqe/smartcity",
-    langs: "EN · FR · BG · RO",
-    stack: ["Three.js", "Wind Physics", "Biophilic 3D", "Weather FX"],
-    gradient: "linear-gradient(135deg, #047857 0%, #eab308 55%, #1e293b 100%)",
-    accentBadge: "Biophilic 3D Map",
-    title: {
-      en: "NEO® HUWART — Solar & Vegetated Parking 3D",
-      ro: "NEO® HUWART — Copertine Solare & Parcări Verzi 3D",
-      fr: "NEO® HUWART — Ombrières Solaires & Végétalisées 3D",
-      bg: "NEO® HUWART — Соларни & Озеленени Паркинги 3D",
-      ru: "NEO® HUWART — 3D Супермаркет и Зелёный Солнечный Паркинг"
-    },
-    desc: {
-      en: "3D architectural twin featuring a glazed supermarket, vegetated solar EV parking canopies, wind turbine with blinking night aviation beacons, and dynamic cloud physics.",
-      ro: "Geamăn digital 3D cu supermarket vitrat, parcări solare cu vegetație, turbină eoliană cu balize nocturne și simulare dinamică a vremii.",
-      fr: "Jumeau 3D intégrant un supermarché vitré, des ombrières solaires végétalisées, une éolienne nocturne et une simulation météo réaliste.",
-      bg: "3D визуализация на супермаркет със стъклени витрини, озеленени соларни навеси, вятърна турбина с нощни маяци и динамични облаци.",
-      ru: "3D-карта супермаркета с зеркальными витринами, зелёными солнечными навесами для зарядки авто, ветрогенератором с ночными маяками и физикой облаков."
-    }
-  },
-  {
-    id: "loclim",
-    category: "embeds",
-    categories: ["all", "webgl", "embeds"],
-    domain: "smart-city-led.com/loclimaccueil",
-    liveUrl: "https://www.smart-city-led.com/loclimaccueil",
-    repoUrl: "https://github.com/iDominiqe/smartcity",
-    langs: "FR · EN",
-    stack: ["Three.js", "Wix Embed", "360° Studio", "Airflow Sim"],
-    gradient: "linear-gradient(135deg, #0284c7 0%, #38bdf8 50%, #312e81 100%)",
-    accentBadge: "360° Product Twin",
-    title: {
-      en: "LOCLIM / NEO Clim® — 360° 3D HVAC Studio",
-      ro: "LOCLIM / NEO Clim® — Studio 3D Climatizare 360°",
-      fr: "LOCLIM / NEO Clim® — Studio Climatisation 3D 360°",
-      bg: "LOCLIM / NEO Clim® — 360° 3D Климатичен Симулатор",
-      ru: "LOCLIM / NEO Clim® — 360° 3D Симулятор Кондиционера"
-    },
-    desc: {
-      en: "Real-time 360° interactive 3D air conditioner twin with Cool, Heat, Dry, and Fan airflow particle modes, packaged as a standalone responsive Wix iframe embed.",
-      ro: "Model 3D 360° în timp real pentru climatizare portabilă cu moduri Cool, Heat, Dry și Fan, integrat direct ca widget responsive în Wix.",
-      fr: "Démonstrateur 3D temps réel 360° avec modes Cool, Heat, Dry et Fan, encapsulé en widget autonome responsive pour Wix.",
-      bg: "Интерактивен 360° 3D климатик в реално време с режими Cool, Heat, Dry и Fan, адаптиран за директно вграждане в Wix.",
-      ru: "Интерактивная 3D-визуализация кондиционера 360° в реальном времени (Cool, Heat, Dry, Fan) с адаптивным встраиванием для сайта на Wix."
     }
   },
   {
@@ -216,6 +216,32 @@ const PROJECTS = [
       fr: "Portail gaming nouvelle génération avec chargement neural, curseur magnétique, mode overdrive et adaptation mobile complète.",
       bg: "Футуристичен гейминг портал с неврален лоудър, магнитен курсор, overdrive режим и пълна мобилна адаптация.",
       ru: "Футуристичный игровой портал с нейронной загрузкой, магнитным курсором, режимом Overdrive и адаптацией под ПК, планшет и телефон."
+    }
+  },
+  {
+    id: "huwart",
+    category: "ecosystems",
+    categories: ["all", "webgl", "ecosystems"],
+    domain: "smartcity-v3.idominiqe.com/parking-studio.html",
+    liveUrl: "https://smartcity-v3.idominiqe.com/parking-studio.html",
+    repoUrl: "https://github.com/iDominiqe/smartcity-v3",
+    langs: "EN · FR · RU · BG · RO",
+    stack: ["Three.js", "Wind Physics", "Biophilic 3D", "Studio Page"],
+    gradient: "linear-gradient(135deg, #047857 0%, #eab308 55%, #1e293b 100%)",
+    accentBadge: "Biophilic 3D Studio",
+    title: {
+      en: "NEO® HUWART — Solar & Vegetated Parking 3D",
+      ro: "NEO® HUWART — Copertine Solare & Parcări Verzi 3D",
+      fr: "NEO® HUWART — Ombrières Solaires & Végétalisées 3D",
+      bg: "NEO® HUWART — Соларни & Озеленени Паркинги 3D",
+      ru: "NEO® HUWART — 3D Супермаркет и Зелёный Солнечный Паркинг"
+    },
+    desc: {
+      en: "Isolated 3D architectural studio featuring vegetated solar EV parking canopies, bio-permeable zones, and live renewable canopy generation telemetry.",
+      ro: "Studio arhitectural 3D izolat cu copertine fotovoltaice vegetale, zone bio-permeabile și telemetrie live pentru parcările EV.",
+      fr: "Studio 3D isolé présentant des ombrières solaires végétalisées, des zones bio-perméables et la télémétrie énergétique en direct.",
+      bg: "Изолирано 3D студио с озеленени соларни навеси за електромобили, био-пропускливи зони и телеметрия в реално време.",
+      ru: "Изолированная 3D-студия зелёного солнечного паркинга с фотовольтаическими навесами, био-дренажом и телеметрией выработки энергии."
     }
   },
   {

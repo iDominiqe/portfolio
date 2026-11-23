@@ -49,7 +49,7 @@ export const TRANSLATIONS = {
     },
     bento: {
       liveQueue: "Live Spatial Stack",
-      onlineCount: "6 Live",
+      onlineCount: "7 Live",
       socialHub: "Neural Social Hub",
       lightingTitle: "Theme, Lighting & 3D Background",
       animTitle: "Background Animation",
@@ -182,7 +182,7 @@ export const TRANSLATIONS = {
     },
     bento: {
       liveQueue: "Proiecte Active",
-      onlineCount: "6 Live",
+      onlineCount: "7 Live",
       socialHub: "Rețele Sociale",
       lightingTitle: "Teme, Iluminare & Fundal 3D",
       animTitle: "Animație Fundal",
@@ -315,7 +315,7 @@ export const TRANSLATIONS = {
     },
     bento: {
       liveQueue: "Pile Spatiale Active",
-      onlineCount: "6 En ligne",
+      onlineCount: "7 En ligne",
       socialHub: "Réseaux & Liens",
       lightingTitle: "Thèmes, Éclairage & Fond 3D",
       animTitle: "Animation de Fond",
@@ -448,7 +448,7 @@ export const TRANSLATIONS = {
     },
     bento: {
       liveQueue: "Активни Проекти",
-      onlineCount: "6 На живо",
+      onlineCount: "7 На живо",
       socialHub: "Социални Мрежи",
       lightingTitle: "Теми, Осветление & 3D Фон",
       animTitle: "Фонова Анимация",
@@ -581,7 +581,7 @@ export const TRANSLATIONS = {
     },
     bento: {
       liveQueue: "Активные проекты",
-      onlineCount: "6 Онлайн",
+      onlineCount: "7 Онлайн",
       socialHub: "Соцсети и связь",
       lightingTitle: "Палитры, свет и 3D-фон",
       animTitle: "Анимация фона",
