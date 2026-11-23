@@ -1,4 +1,4 @@
-// ==========================================================================
+﻿// ==========================================================================
 // iDominiqe Spatial OS — Smooth Eased Scrolling & Dynamic Top Omnibox URL
 // ==========================================================================
 
@@ -63,7 +63,7 @@ export function smoothScrollToElement(el, offset = 92) {
 export function updateOmniboxUrl(pathOrHash) {
   const clean = pathOrHash.startsWith("http")
     ? pathOrHash
-    : `https://idominiqe.com${pathOrHash.startsWith("/") ? "" : "/"}${pathOrHash}`;
+    : `https://portfolio.idominiqe.com${pathOrHash.startsWith("/") ? "" : "/"}${pathOrHash}`;
   const el = document.getElementById("omnibox-url-text");
   if (el && el.textContent !== clean) {
     el.textContent = clean;
@@ -75,7 +75,7 @@ export function updateOmniboxUrl(pathOrHash) {
 }
 
 export function getCurrentOmniboxUrl() {
-  return document.getElementById("omnibox-url-text")?.textContent || "https://idominiqe.com/";
+  return document.getElementById("omnibox-url-text")?.textContent || "https://portfolio.idominiqe.com/";
 }
 
 export function initScrollProgressBar() {

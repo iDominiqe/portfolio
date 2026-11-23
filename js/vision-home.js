@@ -132,8 +132,8 @@ function syncAddressUrl(proj) {
   const input = document.getElementById("address-input");
   if (!input || document.activeElement === input) return;
   input.value = proj && proj.id !== "smartcity-v3"
-    ? `https://idominiqe.com/#${proj.id}`
-    : "https://idominiqe.com/";
+    ? `https://portfolio.idominiqe.com/#${proj.id}`
+    : "https://portfolio.idominiqe.com/";
 }
 
 function renderProfilePop() {
@@ -478,7 +478,7 @@ function bindEvents() {
       window.open("https://v-2.idominiqe.com/", "_blank", "noopener,noreferrer");
       return;
     }
-    const cleanHash = raw.replace(/^https?:\/\/idominiqe\.com\/?#?/, "");
+    const cleanHash = raw.replace(/^https?:\/\/(?:portfolio\.)?idominiqe\.com\/?#?/, "");
     const match = PROJECTS.find(
       (p) => p.id.toLowerCase().includes(cleanHash) || p.domain.toLowerCase().includes(cleanHash) || p.title.en.toLowerCase().includes(cleanHash)
     );
@@ -497,7 +497,7 @@ function bindEvents() {
 
   document.getElementById("addr-replay")?.addEventListener("click", runTilePreloadAnimation);
   document.getElementById("addr-copy")?.addEventListener("click", async () => {
-    const url = document.getElementById("address-input")?.value || "https://idominiqe.com/";
+    const url = document.getElementById("address-input")?.value || "https://portfolio.idominiqe.com/";
     await navigator.clipboard?.writeText(url);
     showToast(t("toast.urlCopied"));
   });
