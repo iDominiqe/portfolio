@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-palette="aurora" data-lighting="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0e1c" />
+  <title>iDominiqe Services &amp; Portfolio Archive — Custom 3D Web &amp; Spatial UI</title>
+  <meta name="description" content="Explore all 8 live GitHub 3D WebGL & Liquid Glass projects, configure your future website architecture, and connect with iDominiqe." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/blog.css" />
+</head>
+<body>
+
+  <div class="scroll-progress-track" aria-hidden="true"><div class="scroll-progress-bar" id="scroll-progress-bar"></div></div>
+
+  <div class="bg-stage" aria-hidden="true">
+    <canvas id="ambient-canvas"></canvas>
+    <div class="bg-wallpaper" id="bg-wallpaper"></div>
+    <div class="bg-dimmer"></div>
+    <div class="bg-noise"></div>
+  </div>
+
+  <div class="toast-pill liquid-glass" id="toast-pill" role="status" aria-live="polite"></div>
+
+  <div class="parallax-stage">
+    <!-- Top Address Bar (Harmonized with VisionOS Home) -->
+    <header class="top-spatial-bar liquid-glass">
+      <div class="bar-group">
+        <a class="pill-icon-btn" href="./index.html" title="Back to Home" aria-label="Back to Home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        </a>
+        <button class="pill-icon-btn" id="scroll-top-btn" title="Scroll to top" aria-label="Scroll to top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
+        </button>
+      </div>
+
+      <div class="domain-omnibox">
+        <div class="domain-url">
+          <span class="ssl-dot" title="Cloudflare SSL Active"></span>
+          <span id="omnibox-url-text">https://idominiqe.com/services.html</span>
+        </div>
+        <div class="omnibox-actions">
+          <button class="kbd-hint" id="copy-domain-btn">Copy</button>
+        </div>
+      </div>
+
+      <div class="bar-group" style="flex-wrap: wrap;">
+        <div class="lang-switcher" role="group" aria-label="Language switcher">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="ro">RO</button>
+          <button class="lang-btn" data-lang="fr">FR</button>
+          <button class="lang-btn" data-lang="bg">BG</button>
+          <button class="lang-btn" data-lang="ru">RU</button>
+        </div>
+        <a class="btn-secondary-glass" href="./blog/index.html" data-i18n="nav.blog" style="padding:7px 14px;">Blog</a>
+        <a class="btn-primary-glass" href="./index.html" data-i18n="nav.overview" style="padding:7px 14px;">Home</a>
+      </div>
+    </header>
+
+    <div class="spatial-workspace">
+      <aside class="left-dock liquid-glass" aria-label="Services navigation">
+        <a class="dock-btn" href="./index.html" data-tooltip="Home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </a>
+        <button class="dock-btn active" data-scroll-target="archive" data-tooltip="All 8 Builds">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+        </button>
+        <button class="dock-btn" data-scroll-target="configurator" data-tooltip="Services">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </button>
+        <a class="dock-btn" href="./blog/index.html" data-tooltip="Blog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+        </a>
+        <button class="dock-btn" data-scroll-target="connect" data-tooltip="Connect">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </button>
+      </aside>
+
+      <main class="main-glass-shell liquid-glass" id="main-shell">
+        <div class="shell-header">
+          <label class="search-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="search" id="services-search" data-i18n-placeholder="searchPlaceholder" placeholder="Search 3D works, tech, domains..." />
+          </label>
+
+          <nav class="shell-tabs" id="services-cat-tabs" aria-label="Archive filters">
+            <button class="shell-tab active" data-cat="all" data-i18n="tabs.all">All Works</button>
+            <button class="shell-tab" data-cat="webgl" data-i18n="tabs.webgl">3D &amp; WebGL</button>
+            <button class="shell-tab" data-cat="ecosystems" data-i18n="tabs.ecosystems">Smart Ecosystems</button>
+            <button class="shell-tab" data-cat="cyberpunk" data-i18n="tabs.cyberpunk">Cyberpunk &amp; Gaming</button>
+          </nav>
+
+          <a href="https://v-2.idominiqe.com/" target="_blank" rel="noopener noreferrer" class="profile-pill" title="Open Legacy v-2 Edition">
+            <div class="avatar-orb">v2</div>
+            <div class="profile-meta">
+              <span class="profile-name">v-2 Archive</span>
+              <span class="profile-handle">v-2.idominiqe.com</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- SECTION 1: ALL 8 GITHUB PROJECTS ARCHIVE -->
+        <section class="shell-section" id="archive">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker" data-i18n="sections.portfolioKicker">Interactive Works Archive</div>
+              <h1 class="section-title" data-i18n="sections.portfolioTitle">Crafted 3D Worlds, Spatial UI &amp; Production Sites</h1>
+            </div>
+            <p class="section-sub" data-i18n="sections.portfolioSub">Real-time WebGL ecosystems, cybernetic HUDs, and bespoke web experiences engineered for desktop, tablet, and mobile.</p>
+          </div>
+          <div class="portfolio-grid" id="services-portfolio-grid"></div>
+        </section>
+
+        <!-- SECTION 2: WEB SERVICES CONFIGURATOR -->
+        <section class="shell-section" id="configurator">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker" data-i18n="sections.servicesKicker">Web Creation &amp; Interactive Engineering</div>
+              <h2 class="section-title" data-i18n="sections.servicesTitle">Configure Your Future Website</h2>
+            </div>
+            <p class="section-sub" data-i18n="sections.servicesSub">Toggle the spatial modules you want — watch the architecture scope, delivery estimate, and ready-to-send brief update live.</p>
+          </div>
+
+          <div class="services-layout">
+            <div class="service-toggles-grid" id="service-toggles-grid"></div>
+
+            <aside class="service-summary-card liquid-glass">
+              <div>
+                <div class="panel-head-row">
+                  <h3 class="panel-title" data-i18n="serviceSummary.title">Live Project Scope</h3>
+                  <span class="panel-badge" id="summary-tier-badge">Interactive 3D Studio</span>
+                </div>
+                <div class="summary-kpi-row">
+                  <div class="summary-kpi">
+                    <span data-i18n="serviceSummary.timelineLabel">Est. Delivery</span>
+                    <strong id="summary-days">12 days</strong>
+                  </div>
+                  <div class="summary-kpi">
+                    <span data-i18n="serviceSummary.modulesLabel">Selected Modules</span>
+                    <strong id="summary-count">4 / 6</strong>
+                  </div>
+                </div>
+              </div>
+
+              <pre class="brief-preview" id="brief-preview"></pre>
+
+              <div class="hero-cta-group">
+                <button class="btn-primary-glass" id="copy-brief-btn" data-i18n="serviceSummary.copyBrief">Copy Brief</button>
+                <a class="btn-secondary-glass" href="https://t.me/idominiqe" target="_blank" rel="noopener noreferrer" data-i18n="serviceSummary.sendTelegram">Send via Telegram</a>
+                <a class="btn-secondary-glass" href="https://discord.gg/f5wGW62Jsy" target="_blank" rel="noopener noreferrer" data-i18n="serviceSummary.sendDiscord">Open Discord</a>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- SECTION 3: SOCIAL CHANNELS -->
+        <section class="shell-section" id="connect">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker" data-i18n="sections.connectKicker">Direct Channels</div>
+              <h2 class="section-title" data-i18n="sections.connectTitle">Connect with iDominiqe</h2>
+            </div>
+            <p class="section-sub" data-i18n="sections.connectSub">Reach out directly on Discord, Telegram, Instagram, YouTube, Facebook, or explore the source code on GitHub.</p>
+          </div>
+          <div class="connect-grid" id="connect-grid"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <nav class="bottom-pill-nav liquid-glass" aria-label="Services navigation bar">
+    <a class="bottom-nav-btn" href="./index.html" data-i18n="nav.overview">Overview</a>
+    <button class="bottom-nav-btn active" data-scroll-target="archive" data-i18n="nav.works">Portfolio</button>
+    <button class="bottom-nav-btn" data-scroll-target="configurator" data-i18n="nav.services">Services</button>
+    <a class="bottom-nav-btn" href="./blog/index.html" data-i18n="nav.blog">Blog</a>
+    <button class="bottom-nav-btn" data-scroll-target="connect" data-i18n="nav.connect">Connect</button>
+  </nav>
+
+  <!-- PROJECT PREVIEW MODAL -->
+  <div class="modal-backdrop" id="project-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-project-title">
+    <div class="project-modal liquid-glass">
+      <div class="panel-head-row">
+        <div>
+          <span class="panel-badge" id="modal-project-domain">smartcity-v3.idominiqe.com</span>
+          <h2 class="section-title" id="modal-project-title" style="margin-top:6px;">Project Title</h2>
+        </div>
+        <button class="pill-icon-btn" id="close-project-modal" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-preview-frame"><iframe id="modal-iframe" title="Live preview" loading="lazy"></iframe></div>
+      <p class="section-sub" id="modal-project-desc" style="max-width:100%;"></p>
+      <div class="project-meta-row" id="modal-project-stack"></div>
+      <div class="hero-cta-group">
+        <a class="btn-primary-glass" id="modal-open-live" href="#" target="_blank" rel="noopener noreferrer" data-i18n="modal.openNewTab">Open Live Domain</a>
+        <a class="btn-secondary-glass" id="modal-open-github" href="#" target="_blank" rel="noopener noreferrer" data-i18n="modal.viewGithub">View on GitHub</a>
+        <button class="btn-secondary-glass" id="modal-close-btn" data-i18n="modal.close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/services-page.js"></script>
+</body>
+</html>

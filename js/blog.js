@@ -289,7 +289,7 @@ function renderInteractiveWidget(article) {
     const records = [
       { type: "NS", host: "idominiqe.com", val: "Cloudflare Anycast Nameservers", desc: "Delegates full zone authority to Cloudflare global DNS." },
       { type: "A", host: "@ (idominiqe.com)", val: "185.199.108.153 – .111.153 (Proxied ☁️)", desc: "Routes root apex traffic through Cloudflare edge to GitHub Pages." },
-      { type: "CNAME", host: "cyber / blaze / smartcity / smartcity-v2 / smartcity-v3", val: "idominiqe.github.io (Proxied ☁️)", desc: "Maps clean subdomains to separate repositories without exposing IPs." },
+      { type: "CNAME", host: "cyber / blaze / v-2 / smartcity / smartcity-v2 / smartcity-v3", val: "idominiqe.github.io (Proxied ☁️)", desc: "Maps clean subdomains to separate repositories without exposing IPs." },
       { type: "TXT", host: "_discord / @ SPF / DKIM", val: "Verification & Mail Auth", desc: "Proves domain ownership and prevents email spoofing (DNS-Only)." },
       { type: "MX", host: "idominiqe.com", val: "route1..3.mx.cloudflare.net", desc: "Routes incoming mail securely to private aliases." }
     ];
